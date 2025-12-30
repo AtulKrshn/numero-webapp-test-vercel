@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/Card
 
 import { PriceDisplay } from '../ui/PriceDisplay';
 
-export function UserDetailsForm({ onSubmit }) {
+export function UserDetailsForm({ onSubmit, isProcessing = false }) {
     const {
         register,
         handleSubmit,
@@ -26,7 +26,6 @@ export function UserDetailsForm({ onSubmit }) {
 
     const handleFormSubmit = (data) => {
         const payload = { ...data, totalPrice, currency: 'INR' };
-        console.log('Form Submitted:', payload);
         if (onSubmit) onSubmit(payload);
     };
 
@@ -165,7 +164,7 @@ export function UserDetailsForm({ onSubmit }) {
                 hasPartner={hasPartner}
                 totalPrice={totalPrice}
                 formId="numerology-form"
-                isSubmitting={isSubmitting}
+                isSubmitting={isSubmitting || isProcessing}
             />
         </div>
     );

@@ -1,16 +1,109 @@
-# React + Vite
+# Sankhya Vedic Numerology - Web Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An elegant, modern frontend for the Sankhya Vedic Numerology platform. Built with **React**, **Vite**, and **Tailwind CSS**, this application offers a seamless user experience for purchasing personalized numerology reports.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-   **Dynamic User Details Form**:
+    -   Collects detailed birth information (Date, Time, Place).
+    -   **Partner Compatibility Upsell**: Slide-in form section for partner details when enabled.
+    -   **Real-time Validation**: Robust form validation using `react-hook-form`.
+    -   **Accessible UI**: Fully ARIA-compliant inputs and error states.
 
-## React Compiler
+-   **Smart Pricing Engine**:
+    -   **Base Report**: ₹51
+    -   **Partner Add-on**: +₹50 (Total ₹101)
+    -   **Sticky Price Display**: Sidebar summary on Desktop, Fixed bottom bar on Mobile.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-   **Modern Tech Stack**:
+    -   **React 18** + **Vite**: Blazing fast development and build.
+    -   **Tailwind CSS v4**: Utility-first styling with custom design tokens (`@theme`).
+    -   **React Router v6**: Client-side routing with mock payment flow simulation.
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+-   **Frontend Framework**: React 18, Vite
+-   **Styling**: Tailwind CSS v4, PostCSS
+-   **Form Management**: React Hook Form
+-   **Routing**: React Router DOM
+-   **HTTP Client**: Axios
+-   **Icons**: Heroicons / SVGs
+
+## 🚀 Getting Started
+
+### Prerequisites
+-   Node.js (v16+, v18+ recommended)
+-   npm or yarn
+
+### Installation
+
+1.  Clone the repository:
+    ```bash
+    git clone https://github.com/your-org/sankhya-webapp.git
+    cd sankhya-webapp
+    ```
+
+2.  Install dependencies:
+    ```bash
+    npm install
+    ```
+
+3.  Configure Environment Variables:
+    Create a `.env.local` file in the root directory:
+    ```env
+    VITE_API_BASE_URL=http://localhost:8000
+    ```
+
+4.  Run the development server:
+    ```bash
+    npm run dev
+    ```
+    Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+## 📦 Build & Deployment
+
+To build the application for production:
+
+```bash
+npm run build
+```
+
+This will compile the app into the `dist/` directory, ready to be hosted on Vercel, Netlify, or AWS S3/CloudFront.
+
+### Preview Production Build
+You can test the production build locally:
+```bash
+npm run preview
+```
+
+## 📂 Project Structure
+
+```
+src/
+├── components/
+│   ├── ui/          # Reusable UI atoms (Button, Input, Card, Select)
+│   └── form/        # Complex form logic (UserDetailsForm)
+├── pages/           # Route components (Home, Success)
+├── services/        # API configuration (Axios)
+├── context/         # Global state (ToastContext)
+└── index.css        # Tailwind @theme and global styles
+```
+
+## 🎨 Design System
+
+The app uses a defined color palette and typography system via Tailwind v4's `@theme` directive:
+
+-   **Primary**: `#4B2E83` (Royal Purple)
+-   **Secondary**: `#D4A373` (Gold/Sand)
+-   **Font Display**: *Playfair Display*
+-   **Font Body**: *Inter*
+
+## 🤝 Contributing
+
+1.  Create a feature branch (`git checkout -b feature/amazing-feature`).
+2.  Commit your changes (`git commit -m 'Add some amazing feature'`).
+3.  Push to the branch (`git push origin feature/amazing-feature`).
+4.  Open a Pull Request.
+
+---
+Built with ❤️ for Sankhya Vedic Numerology.

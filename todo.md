@@ -72,21 +72,21 @@ This document outlines the step-by-step plan based on `Milestones.md`.
 ## Milestone 5: Payment Flow & Routing
 - [x] **Issue 23: React Router Setup**
   - Config `/` and `/success`.
-- [ ] **Issue 24: Mock Payment Flow**
+- [x] **Issue 24: Mock Payment Flow**
   - Simulate payment delay -> Redirect.
-- [ ] **Issue 25: Success Page**
+- [x] **Issue 25: Success Page**
   - Static confirmation page.
-- [ ] **Issue 26: Hard Refresh Routing Test**
+- [x] **Issue 26: Hard Refresh Routing Test**
   - *Test*: Refresh `/success` -> Verify it doesn't 404.
 
 ## Milestone 6: Final Polish & Deployment Readiness
-- [ ] **Issue 27: Visual Consistency Review**
+- [x] **Issue 27: Visual Consistency Review**
   - Match Landing Page.
-- [ ] **Issue 28: Loading & Disabled State Review**
+- [x] **Issue 28: Loading & Disabled State Review**
   - Prevent double submissions.
-- [ ] **Issue 29: Environment Switching Validation**
+- [x] **Issue 29: Environment Switching Validation**
   - Test missing env vars.
-- [ ] **Issue 30: Mobile Edge Case Testing**
+- [x] **Issue 30: Mobile Edge Case Testing**
   - Small screens, keyboard overlap.
-- [ ] **Issue 31: Documentation & Deployment Guide**
+- [x] **Issue 31: Documentation & Deployment Guide**
   - Update `README.md` with deploy instructions.

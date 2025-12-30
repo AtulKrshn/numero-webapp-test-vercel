@@ -1,10 +1,12 @@
 import React from 'react';
 import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export function Success() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const { orderData } = location.state || {};
 
     return (
         <div className="max-w-md mx-auto pt-10">
@@ -18,6 +20,11 @@ export function Success() {
 
                     <div className="space-y-2">
                         <h2 className="text-2xl font-bold text-gray-900 font-display">Order Confirmed!</h2>
+                        {orderData && (
+                            <p className="text-sm font-medium text-gray-800">
+                                Analysis for: {orderData.name}
+                            </p>
+                        )}
                         <p className="text-gray-600">
                             Thank you for your request. Your detailed numerology report is being generated and will be sent to your email shortly.
                         </p>

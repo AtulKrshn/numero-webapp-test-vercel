@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { UserDetailsForm } from '../components/form/UserDetailsForm';
 import { useNavigate } from 'react-router-dom';
 
 export function Home() {
     const navigate = useNavigate();
+    const [isProcessing, setIsProcessing] = useState(false);
 
-    const handleFormSubmit = (data) => {
-        // In the future, this will initiate the payment order.
-        // For now, we'll just log and mock redirect.
-        console.log('Home Page Received Data:', data);
-
-        // Mocking a successful "action" for now, usually we'd await API here.
-        navigate('/success');
+    const handleFormSubmit = async (data) => {
+        setIsProcessing(true);
+        // Simulate network/API delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        setIsProcessing(false);
+        navigate('/success', { state: { orderData: data } });
     };
 
     return (
@@ -25,7 +25,7 @@ export function Home() {
                 </p>
             </div>
 
-            <UserDetailsForm onSubmit={handleFormSubmit} />
+            <UserDetailsForm onSubmit={handleFormSubmit} isProcessing={isProcessing} />
         </div>
     );
 }
