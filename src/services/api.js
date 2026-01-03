@@ -8,6 +8,8 @@ const api = axios.create({
     timeout: 10000,
 });
 
+console.log('API Initialized with Base URL:', api.defaults.baseURL);
+
 // Request interceptor (placeholder for future auth tokens)
 api.interceptors.request.use((config) => {
     return config;
@@ -25,8 +27,20 @@ api.interceptors.response.use((response) => {
 
 export const getPricingConfig = async () => {
     try {
-        const response = await api.get('/config/pricing');
-        return response.data;
+        const response = await api.get('/products');
+        const products = response.data.products || [];
+
+        // Map products to base and partner prices logic
+        // Assuming known SKUs or order of products
+        // Fallback to default if not found
+        const baseProduct = products.find(p => p.sku === 'NUM-FULL-2026');
+        const partnerProduct = products.find(p => p.sku === 'NUM-REL-2026');
+
+        return {
+            base: baseProduct ? baseProduct.sale_price : 51,
+            partner: partnerProduct ? partnerProduct.sale_price : 50,
+            currency: baseProduct ? baseProduct.currency : 'INR'
+        };
     } catch (error) {
         console.warn('Fetching pricing failed, using fallback.', error.message);
         return { base: 51, partner: 50 };
@@ -35,18 +49,26 @@ export const getPricingConfig = async () => {
 
 export const createOrder = async (orderData) => {
     try {
-        const response = await api.post('/orders/create', orderData);
+        // Backend expects 'product_sku'. Frontend might be sending something else.
+        // We need to ensure payload matches OrderCreate schema.
+        // For now, pass orderData through, assuming caller handles structure
+        // or we map it here.
+        const response = await api.post('/orders/create-order', orderData);
         return response.data;
     } catch (error) {
-        console.warn('Order creation failed, returning mock ID.', error.message);
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        return {
-            order_id: 'order_mock_' + Date.now(),
-            amount: orderData?.amount || 51,
-            currency: 'INR',
-            status: 'created'
-        };
+        console.warn('Order creation failed.', error.message);
+        throw error; // Re-throw to let UI handle error
+    }
+};
+
+export const verifyPayment = async (paymentData) => {
+    try {
+        const { payment_id, order_id, signature } = paymentData;
+        const response = await api.post(`/payments/verify?payment_id=${payment_id}&order_id=${order_id}&signature=${signature}`);
+        return response.data;
+    } catch (error) {
+        console.warn('Payment verification failed.', error.message);
+        throw error;
     }
 };
 

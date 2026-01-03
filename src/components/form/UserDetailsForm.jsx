@@ -17,7 +17,10 @@ export function UserDetailsForm({ onSubmit, isProcessing = false }) {
         mode: 'onBlur'
     });
 
-    const hasPartner = watch('hasPartner');
+    // Feature Flag: Set to true when backend is ready
+    const ENABLE_PARTNER_FEATURE = false;
+
+    const hasPartner = ENABLE_PARTNER_FEATURE && watch('hasPartner');
 
     // Pricing Logic
     const basePrice = 51;
@@ -32,7 +35,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false }) {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start w-full max-w-5xl mx-auto pb-24 lg:pb-0">
             {/* Left Column: Form Inputs */}
-            <div className="lg:col-span-2">
+            <div className="lg:col-span-2 scroll-mt-24" id="numerology-section">
                 <Card>
                     <CardHeader>
                         <CardTitle>Enter Your Birth Details</CardTitle>
@@ -60,51 +63,55 @@ export function UserDetailsForm({ onSubmit, isProcessing = false }) {
                                 })}
                             />
 
-                            <Select
-                                label="Gender"
-                                error={errors.gender?.message}
-                                {...register('gender', { required: 'Gender is required' })}
-                            >
-                                <option value="">Select Gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Other</option>
-                            </Select>
-
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <Select
+                                    label="Gender"
+                                    error={errors.gender?.message}
+                                    {...register('gender', { required: 'Gender is required' })}
+                                >
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </Select>
+
                                 <Input
                                     label="Date of Birth"
                                     type="date"
                                     error={errors.dob?.message}
                                     {...register('dob', { required: 'Date of Birth is required' })}
                                 />
+                            </div>
 
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Input
-                                    label="Time of Birth"
+                                    label="Time of Birth (Optional)"
                                     type="time"
                                     error={errors.tob?.message}
-                                    {...register('tob', { required: 'Time of Birth is required' })}
+                                    {...register('tob')}
+                                />
+
+                                <Input
+                                    label="Place of Birth (Optional)"
+                                    placeholder="e.g. Mumbai, Maharashtra"
+                                    error={errors.pob?.message}
+                                    {...register('pob')}
                                 />
                             </div>
 
-                            <Input
-                                label="Place of Birth"
-                                placeholder="e.g. Mumbai, Maharashtra"
-                                error={errors.pob?.message}
-                                {...register('pob', { required: 'Place of Birth is required' })}
-                            />
-
-                            <div className="flex items-center space-x-2 pt-4 border-t">
-                                <input
-                                    type="checkbox"
-                                    id="hasPartner"
-                                    className="h-5 w-5 rounded border-gray-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
-                                    {...register('hasPartner')}
-                                />
-                                <label htmlFor="hasPartner" className="text-sm font-medium text-gray-700 cursor-pointer select-none">
-                                    Include Partner Compatibility Report <span className="text-[var(--color-primary)] font-bold">(+₹{partnerPrice})</span>
-                                </label>
-                            </div>
+                            {ENABLE_PARTNER_FEATURE && (
+                                <div className="flex items-center space-x-2 pt-4 border-t">
+                                    <input
+                                        type="checkbox"
+                                        id="hasPartner"
+                                        className="h-5 w-5 rounded border-gray-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
+                                        {...register('hasPartner')}
+                                    />
+                                    <label htmlFor="hasPartner" className="text-sm font-medium text-gray-700 cursor-pointer select-none">
+                                        Include Partner Compatibility Report <span className="text-[var(--color-primary)] font-bold">(+₹{partnerPrice})</span>
+                                    </label>
+                                </div>
+                            )}
 
                             <div className={`
                     grid gap-4 overflow-hidden transition-all duration-300 ease-in-out
