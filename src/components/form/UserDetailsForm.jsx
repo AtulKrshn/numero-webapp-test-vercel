@@ -165,11 +165,13 @@ export function UserDetailsForm({ onSubmit, isProcessing = false }) {
             </div>
 
             {/* Right Column: Sticky Price Display (Desktop) & Fixed Bottom Bar (Mobile) */}
+            {/* Right Column: Sticky Price Display (Desktop) & Fixed Bottom Bar (Mobile) */}
             <PriceDisplay
                 basePrice={basePrice}
                 partnerPrice={partnerPrice}
                 hasPartner={hasPartner}
                 totalPrice={totalPrice}
+                originalPrice={totalPrice + 200} // Mock Original Price for "Slash" effect
                 formId="numerology-form"
                 isSubmitting={isSubmitting || isProcessing}
             />
