@@ -59,7 +59,7 @@ export function Home() {
             // 1. Prepare Payload matching OrderCreate schema
             const payload = {
                 email: data.email,
-                product_sku: data.hasPartner ? "NUM-REL-2026" : "NUM-FULL-2026",
+                product_skus: data.hasPartner ? ["NUM-REL-2026"] : ["NUM-FULL-2026"],
                 primary_name: data.name,
                 primary_gender: data.gender,
                 primary_dob: data.dob,
@@ -90,7 +90,7 @@ export function Home() {
                         // 4. Verify Payment
                         await verifyPayment({
                             payment_id: response.razorpay_payment_id,
-                            order_id: response.razorpay_order_id,
+                            provider_order_id: response.razorpay_order_id,
                             signature: response.razorpay_signature
                         });
                         // 5. Navigate to Success

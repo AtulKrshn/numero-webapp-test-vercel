@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000',
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api/v1/',
     headers: {
         'Content-Type': 'application/json',
     },
@@ -63,8 +63,8 @@ export const createOrder = async (orderData) => {
 
 export const verifyPayment = async (paymentData) => {
     try {
-        const { payment_id, order_id, signature } = paymentData;
-        const response = await api.post(`/payments/verify?payment_id=${payment_id}&order_id=${order_id}&signature=${signature}`);
+        const { payment_id, provider_order_id, signature } = paymentData;
+        const response = await api.post(`/payments/verify?payment_id=${payment_id}&provider_order_id=${provider_order_id}&signature=${signature}`);
         return response.data;
     } catch (error) {
         console.warn('Payment verification failed.', error.message);
