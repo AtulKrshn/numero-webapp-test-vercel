@@ -4,6 +4,8 @@ import { Layout } from './components/ui/Layout'
 import { ToastProvider } from './context/ToastContext'
 import { Home } from './pages/Home'
 import { Success } from './pages/Success'
+import { PaymentFailed } from './pages/PaymentFailed';
+import { NotFound } from './pages/NotFound'
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/success" element={<Success />} />
+            <Route path="/payment-failed" element={<PaymentFailed />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
 
           <div className="mt-8 text-gray-600 text-center text-sm">

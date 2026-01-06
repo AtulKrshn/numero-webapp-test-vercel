@@ -93,10 +93,44 @@ export function Home() {
                             provider_order_id: response.razorpay_order_id,
                             signature: response.razorpay_signature
                         });
-                        // 5. Navigate to Success
-                        navigate('/success', { state: { orderData: data, payment: response } });
+                        // 5. Navigate to Success (Confirmed)
+                        navigate('/success', {
+                            state: {
+                                orderData: data,
+                                payment: response,
+                                status: 'confirmed'
+                            }
+                        });
                     } catch (err) {
-                        alert("Payment Verification Failed: " + err.message);
+                        // Industry Standard: Smart Fallback
+                        // 1. If Server explicitly REJECTS (400-499) -> Show Error (Don't lie to user)
+                        // 2. If Network fails (no response) or Server crashes (500) -> Optimistic UI (Trust Webhook)
+
+                        const status = err.response ? err.response.status : 0;
+
+                        // Smart Fallback Refined:
+                        // 1. Explicit Rejection: 400 (Invalid Data/Sig), 401/403 (Auth) -> FAILURE PAGE
+                        // 2. Ambiguity: 404 (Endpoint missing), 500+ (Crash), or Network Error (0) -> SUCCESS PAGE (Pending Sync)
+
+                        if (status === 400 || status === 401 || status === 403) {
+                            console.error("Critical Verification Failure:", err.response.data);
+                            // Industry Standard: Redirect to dedicated Failure Page
+                            navigate('/payment-failed', {
+                                state: {
+                                    error: err.response.data.detail || "Invalid Signature",
+                                    orderData: data
+                                }
+                            });
+                        } else {
+                            console.warn("Network/Server glitch, relying on webhook sync:", err);
+                            navigate('/success', {
+                                state: {
+                                    orderData: data,
+                                    payment: response,
+                                    status: 'pending_sync'
+                                }
+                            });
+                        }
                     }
                 },
                 prefill: {
