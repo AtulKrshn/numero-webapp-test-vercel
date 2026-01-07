@@ -5,6 +5,7 @@ import { ToastProvider } from './context/ToastContext'
 import { Home } from './pages/Home'
 import { Success } from './pages/Success'
 import { PaymentFailed } from './pages/PaymentFailed';
+import { Checkout } from './pages/Checkout';
 import { NotFound } from './pages/NotFound'
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/success" element={<Success />} />
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="/payment-failed" element={<PaymentFailed />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

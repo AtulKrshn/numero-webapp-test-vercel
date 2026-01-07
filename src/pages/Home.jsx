@@ -3,7 +3,7 @@ import { UserDetailsForm } from '../components/form/UserDetailsForm';
 import { TrustSection } from '../components/TrustSection';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import { createOrder, verifyPayment, fetchProducts } from '../services/api';
+import { fetchProducts } from '../services/api';
 
 export function Home() {
     const navigate = useNavigate();
@@ -38,7 +38,6 @@ export function Home() {
     };
 
     // Deep Linking: Scroll to form and focus if hash is present
-    // ... (Deep linking code preserved) ...
     useEffect(() => {
         if (location.hash === '#numerology-form') {
             const checkAndScroll = () => {
@@ -92,101 +91,27 @@ export function Home() {
                 return;
             }
 
-            // 1. Prepare Payload matching OrderCreate schema
-            const payload = {
-                email: data.email,
-                product_skus: [selectedProduct.sku], // Use dynamic SKU
-                primary_name: data.name,
-                primary_gender: data.gender,
-                primary_dob: data.dob,
-                primary_tob: data.tob ? (data.tob.length === 5 ? `${data.tob}:00` : data.tob) : null,
-                primary_pob: data.pob,
-                partner_name: data.partnerName || null,
-                partner_gender: null,
-                partner_dob: data.partnerDob || null,
-                partner_tob: data.partnerTob ? (data.partnerTob.length === 5 ? `${data.partnerTob}:00` : data.partnerTob) : null,
-                partner_pob: data.partnerPob || null,
-                additional_metadata: {}
-            };
+            // Calculate exact amount to be consistent (Frontend double-check)
+            // base_price + upgrade_cost
+            const basePrice = products.find(p => p.sku.includes('FULL') || p.sku.includes('SINGLE'))?.sale_price || 0;
+            const partnerPrice = products.find(p => p.sku.includes('REL') || p.sku.includes('PARTNER'))?.sale_price || 0;
+            const totalPrice = data.hasPartner ? Number(partnerPrice) : Number(basePrice);
 
-            // 2. Create Order
-            const order = await createOrder(payload);
-            console.log("Order Created:", order);
-
-            // 3. Open Razorpay
-            const options = {
-                key: order.key_id,
-                amount: order.amount * 100,
-                currency: order.currency,
-                name: "Sankhya Numerology",
-                description: "Vedic Numerology Report 2026",
-                order_id: order.gateway_order_id,
-                handler: async function (response) {
-                    try {
-                        // 4. Verify Payment
-                        await verifyPayment({
-                            payment_id: response.razorpay_payment_id,
-                            provider_order_id: response.razorpay_order_id,
-                            signature: response.razorpay_signature
-                        });
-                        // 5. Navigate to Success (Confirmed)
-                        navigate('/success', {
-                            state: {
-                                orderData: data,
-                                payment: response,
-                                status: 'confirmed'
-                            }
-                        });
-                    } catch (err) {
-                        // Industry Standard: Smart Fallback
-                        // 1. If Server explicitly REJECTS (400-499) -> Show Error (Don't lie to user)
-                        // 2. If Network fails (no response) or Server crashes (500) -> Optimistic UI (Trust Webhook)
-
-                        const status = err.response ? err.response.status : 0;
-
-                        // Smart Fallback Refined:
-                        // 1. Explicit Rejection: 400 (Invalid Data/Sig), 401/403 (Auth) -> FAILURE PAGE
-                        // 2. Ambiguity: 404 (Endpoint missing), 500+ (Crash), or Network Error (0) -> SUCCESS PAGE (Pending Sync)
-
-                        if (status === 400 || status === 401 || status === 403) {
-                            console.error("Critical Verification Failure:", err.response.data);
-                            // Industry Standard: Redirect to dedicated Failure Page
-                            navigate('/payment-failed', {
-                                state: {
-                                    error: err.response.data.detail || "Invalid Signature",
-                                    orderData: data
-                                }
-                            });
-                        } else {
-                            console.warn("Network/Server glitch, relying on webhook sync:", err);
-                            navigate('/success', {
-                                state: {
-                                    orderData: data,
-                                    payment: response,
-                                    status: 'pending_sync'
-                                }
-                            });
-                        }
-                    }
-                },
-                prefill: {
-                    name: payload.primary_name,
-                    email: payload.email,
-                },
-                theme: { color: "#3399cc" }
-            };
-
-            const rzp = new window.Razorpay(options);
-            rzp.on('payment.failed', function (response) {
-                alert("Payment Failed: " + response.error.description);
-                setIsProcessing(false);
+            // Redirect to Intermediate Checkout Page
+            navigate('/checkout', {
+                state: {
+                    formData: data,
+                    selectedProduct: selectedProduct,
+                    totalPrice: totalPrice,
+                    currency: selectedProduct.currency || 'INR'
+                }
             });
-            rzp.open();
+
+            setIsProcessing(false);
 
         } catch (error) {
             console.error("Order Flow Error:", error);
-            const msg = error.response?.data?.detail || error.message || "Failed to initiate order.";
-            alert(`Error: ${msg}`);
+            alert(`Error: ${error.message}`);
             setIsProcessing(false);
         }
     };
@@ -195,7 +120,7 @@ export function Home() {
         <div className="space-y-12">
             <div className="text-center space-y-4 pt-12 pb-8">
                 <h1 className="text-4xl md:text-6xl font-display font-bold text-[var(--color-primary)] leading-tight">
-                    Sankhya Vedic Numerology
+                    DevSankhya Vedic Numerology
                 </h1>
                 <p className="text-[var(--color-secondary)] max-w-2xl mx-auto text-xl leading-relaxed">
                     Unlock the secrets of your life path with our detailed 2026 numerology analysis.
