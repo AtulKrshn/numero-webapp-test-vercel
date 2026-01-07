@@ -3,15 +3,42 @@ import { UserDetailsForm } from '../components/form/UserDetailsForm';
 import { TrustSection } from '../components/TrustSection';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-import { createOrder, verifyPayment } from '../services/api';
+import { createOrder, verifyPayment, fetchProducts } from '../services/api';
 
 export function Home() {
     const navigate = useNavigate();
     const location = useLocation();
     const [isProcessing, setIsProcessing] = useState(false);
+    const [products, setProducts] = useState([]);
+    const [isLoadingProducts, setIsLoadingProducts] = useState(true);
+
+    // Fetch Products on Mount
+    useEffect(() => {
+        const loadProducts = async () => {
+            const data = await fetchProducts();
+            setProducts(data);
+            setIsLoadingProducts(false);
+        };
+        loadProducts();
+    }, []);
+
+    // Helper: Identify Product based on form choice
+    const getProductByChoice = (hasPartner) => {
+        if (!products || products.length === 0) return null;
+
+        // Dynamic Logic: 
+        // Partner -> Look for "REL" or "PARTNER" in SKU
+        // Single -> Look for "FULL" or "SINGLE" in SKU
+        // Fallback -> Default to first available if simple match fails
+        if (hasPartner) {
+            return products.find(p => p.sku.includes('REL') || p.sku.includes('PARTNER'));
+        } else {
+            return products.find(p => p.sku.includes('FULL') || p.sku.includes('SINGLE'));
+        }
+    };
 
     // Deep Linking: Scroll to form and focus if hash is present
-    // Deep Linking: Scroll to form and focus if hash is present
+    // ... (Deep linking code preserved) ...
     useEffect(() => {
         if (location.hash === '#numerology-form') {
             const checkAndScroll = () => {
@@ -56,10 +83,19 @@ export function Home() {
     const handleFormSubmit = async (data) => {
         setIsProcessing(true);
         try {
+            // New Dynamic SKU Logic
+            const selectedProduct = getProductByChoice(data.hasPartner);
+
+            if (!selectedProduct) {
+                alert("Service is temporarily unavailable (Product Catalog not loaded). Please try again in a moment.");
+                setIsProcessing(false);
+                return;
+            }
+
             // 1. Prepare Payload matching OrderCreate schema
             const payload = {
                 email: data.email,
-                product_skus: data.hasPartner ? ["NUM-REL-2026"] : ["NUM-FULL-2026"],
+                product_skus: [selectedProduct.sku], // Use dynamic SKU
                 primary_name: data.name,
                 primary_gender: data.gender,
                 primary_dob: data.dob,
@@ -166,7 +202,12 @@ export function Home() {
                 </p>
             </div>
 
-            <UserDetailsForm onSubmit={handleFormSubmit} isProcessing={isProcessing} />
+            <UserDetailsForm
+                onSubmit={handleFormSubmit}
+                isProcessing={isProcessing}
+                products={products}
+                isLoadingProducts={isLoadingProducts}
+            />
 
             <TrustSection />
         </div>
