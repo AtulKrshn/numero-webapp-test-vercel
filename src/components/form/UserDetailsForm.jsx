@@ -19,7 +19,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
     });
 
     // Feature Flag: Set to true when backend is ready
-    const ENABLE_PARTNER_FEATURE = true;
+    const ENABLE_PARTNER_FEATURE = false;
 
     const hasPartner = ENABLE_PARTNER_FEATURE && watch('hasPartner');
 
