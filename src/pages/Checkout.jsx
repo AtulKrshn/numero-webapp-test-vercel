@@ -1,0 +1,204 @@
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { createOrder, verifyPayment } from '../services/api';
+
+export function Checkout() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const [isProcessing, setIsProcessing] = useState(false);
+
+    // Initial State Check
+    // If user accesses /checkout directly without data, redirect to Home
+    useEffect(() => {
+        if (!location.state || !location.state.formData || !location.state.selectedProduct) {
+            navigate('/', { replace: true });
+        }
+    }, [location, navigate]);
+
+    if (!location.state || !location.state.formData || !location.state.selectedProduct) {
+        return null; // Avoid flicker before redirect
+    }
+
+    const { formData, selectedProduct, totalPrice, currency } = location.state;
+
+    // Payment Logic Logic (Moved from Home.jsx)
+    const handlePayment = async () => {
+        setIsProcessing(true);
+        try {
+            // 1. Prepare Payload matching OrderCreate schema
+            const payload = {
+                email: formData.email,
+                product_skus: [selectedProduct.sku],
+                primary_name: formData.name,
+                primary_gender: formData.gender,
+                primary_dob: formData.dob,
+                primary_tob: formData.tob ? (formData.tob.length === 5 ? `${formData.tob}:00` : formData.tob) : null,
+                primary_pob: formData.pob,
+                partner_name: formData.partnerName || null,
+                partner_gender: null,
+                partner_dob: formData.partnerDob || null,
+                partner_tob: formData.partnerTob ? (formData.partnerTob.length === 5 ? `${formData.partnerTob}:00` : formData.partnerTob) : null,
+                partner_pob: formData.partnerPob || null,
+                additional_metadata: {
+                    amount_at_checkout: totalPrice,
+                    currency_at_checkout: currency
+                }
+            };
+
+            // 2. Create Order
+            const order = await createOrder(payload);
+            console.log("Order Created:", order);
+
+            // 3. Open Razorpay
+            const options = {
+                key: order.key_id,
+                amount: order.amount * 100,
+                currency: order.currency,
+                name: "DevSankhya Numerology",
+                description: selectedProduct.name || "Vedic Numerology Report 2026",
+                order_id: order.gateway_order_id,
+                handler: async function (response) {
+                    try {
+                        // 4. Verify Payment
+                        await verifyPayment({
+                            payment_id: response.razorpay_payment_id,
+                            provider_order_id: response.razorpay_order_id,
+                            signature: response.razorpay_signature
+                        });
+                        // 5. Navigate to Success
+                        navigate('/success', {
+                            state: {
+                                orderData: formData,
+                                payment: response,
+                                status: 'confirmed'
+                            }
+                        });
+                    } catch (err) {
+                        const status = err.response ? err.response.status : 0;
+                        if (status === 400 || status === 401 || status === 403) {
+                            console.error("Critical Verification Failure:", err.response.data);
+                            navigate('/payment-failed', {
+                                state: {
+                                    error: err.response.data.detail || "Invalid Signature",
+                                    orderData: formData
+                                }
+                            });
+                        } else {
+                            console.warn("Network/Server glitch, relying on webhook sync:", err);
+                            navigate('/success', {
+                                state: {
+                                    orderData: formData,
+                                    payment: response,
+                                    status: 'pending_sync'
+                                }
+                            });
+                        }
+                    }
+                },
+                prefill: {
+                    name: payload.primary_name,
+                    email: payload.email,
+                },
+                theme: { color: "#3399cc" }
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                alert("Payment Failed: " + response.error.description);
+                setIsProcessing(false);
+            });
+            rzp.open();
+
+        } catch (error) {
+            console.error("Order Flow Error:", error);
+            const msg = error.response?.data?.detail || error.message || "Failed to initiate order.";
+            alert(`Error: ${msg}`);
+            setIsProcessing(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-3xl mx-auto space-y-8">
+
+                {/* Header */}
+                <div className="text-center">
+                    <h2 className="text-3xl font-display font-bold text-gray-900">Checkout</h2>
+                    <p className="mt-2 text-sm text-gray-600">Review your details before proceeding to payment.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+                    {/* Customer Details Card (Moved to First) */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Customer Details</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4 text-sm">
+                            <div>
+                                <label className="block text-gray-500">Name</label>
+                                <div className="font-medium text-gray-900">{formData.name}</div>
+                            </div>
+                            <div>
+                                <label className="block text-gray-500">Email</label>
+                                <div className="font-medium text-gray-900">{formData.email}</div>
+                            </div>
+                            <div>
+                                <label className="block text-gray-500">Date of Birth</label>
+                                <div className="font-medium text-gray-900">{formData.dob}</div>
+                            </div>
+
+                            {formData.hasPartner && (
+                                <div className="pt-2 border-t mt-2">
+                                    <label className="block text-gray-500">Partner Details</label>
+                                    <div className="font-medium text-gray-900">
+                                        {formData.partnerName} ({formData.partnerDob})
+                                    </div>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    {/* Order Summary Card */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Order Summary</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="flex justify-between items-start border-b pb-4">
+                                <div>
+                                    <h3 className="font-medium text-gray-900">{selectedProduct.name}</h3>
+                                    {/* SKU Hidden as per request */}
+                                </div>
+                                <span className="font-semibold text-gray-900">{currency === 'INR' ? '₹' : currency} {totalPrice}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center text-lg font-bold text-[var(--color-primary)]">
+                                <span>Total to Pay</span>
+                                <span>{currency === 'INR' ? '₹' : currency} {totalPrice}</span>
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Main Action Action */}
+                <div className="flex justify-center pt-4">
+                    <Button
+                        onClick={handlePayment}
+                        isLoading={isProcessing}
+                        className="w-full md:w-auto md:px-12 py-3 text-lg"
+                    >
+                        Pay {currency === 'INR' ? '₹' : currency} {totalPrice} Securely
+                    </Button>
+                </div>
+
+                <div className="text-center text-xs text-gray-500 flex items-center justify-center gap-2">
+                    <span>Secured by Razorpay</span>
+                </div>
+
+            </div>
+        </div>
+    );
+}

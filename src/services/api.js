@@ -25,26 +25,29 @@ api.interceptors.response.use((response) => {
     return Promise.reject(error);
 });
 
-export const getPricingConfig = async () => {
+// 1. Fetch Raw Products (Source of Truth)
+export const fetchProducts = async () => {
     try {
         const response = await api.get('/products');
-        const products = response.data.products || [];
-
-        // Map products to base and partner prices logic
-        // Assuming known SKUs or order of products
-        // Fallback to default if not found
-        const baseProduct = products.find(p => p.sku === 'NUM-FULL-2026');
-        const partnerProduct = products.find(p => p.sku === 'NUM-REL-2026');
-
-        return {
-            base: baseProduct ? baseProduct.sale_price : 51,
-            partner: partnerProduct ? partnerProduct.sale_price : 50,
-            currency: baseProduct ? baseProduct.currency : 'INR'
-        };
+        return response.data.products || [];
     } catch (error) {
-        console.warn('Fetching pricing failed, using fallback.', error.message);
-        return { base: 51, partner: 50 };
+        console.warn('Fetching products failed:', error.message);
+        return [];
     }
+};
+
+// 2. Helper for Legacy Components (Optional, but good for backward compatibility)
+export const getPricingConfig = async () => {
+    const products = await fetchProducts();
+
+    const baseProduct = products.find(p => p.sku === 'NUM-FULL-2026');
+    const partnerProduct = products.find(p => p.sku === 'NUM-REL-2026');
+
+    return {
+        base: baseProduct ? baseProduct.sale_price : 51,
+        partner: partnerProduct ? partnerProduct.sale_price : 50,
+        currency: baseProduct ? baseProduct.currency : 'INR'
+    };
 };
 
 export const createOrder = async (orderData) => {

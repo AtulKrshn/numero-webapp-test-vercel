@@ -6,8 +6,9 @@ import { Button } from '../ui/Button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/Card';
 
 import { PriceDisplay } from '../ui/PriceDisplay';
+import { Flag } from 'lucide-react';
 
-export function UserDetailsForm({ onSubmit, isProcessing = false }) {
+export function UserDetailsForm({ onSubmit, isProcessing = false, products = [], isLoadingProducts = true }) {
     const {
         register,
         handleSubmit,
@@ -22,13 +23,32 @@ export function UserDetailsForm({ onSubmit, isProcessing = false }) {
 
     const hasPartner = ENABLE_PARTNER_FEATURE && watch('hasPartner');
 
-    // Pricing Logic
-    const basePrice = 51;
-    const partnerPrice = 50;
-    const totalPrice = hasPartner ? basePrice + partnerPrice : basePrice;
+    // Dynamic Pricing Logic
+    // 1. Identify Products
+    const baseProduct = products.find(p => p.sku.includes('FULL') || p.sku.includes('SINGLE'));
+    const partnerProduct = products.find(p => p.sku.includes('REL') || p.sku.includes('PARTNER'));
+
+    // 2. Get Prices (Safety defaults if loading or API fail)
+    const basePriceVal = baseProduct ? Number(baseProduct.sale_price) : 51;
+    const baseMrpVal = baseProduct ? Number(baseProduct.mrp) : 251;
+
+    const relPriceVal = partnerProduct ? Number(partnerProduct.sale_price) : 101;
+    const relMrpVal = partnerProduct ? Number(partnerProduct.mrp) : 501;
+
+    // 3. Calculate Display Values
+    // The "Partner Price" shown on checkbox is the DIFFERENCE (Upgrade Cost)
+    const partnerUpgradeCost = relPriceVal - basePriceVal;
+
+    // Total Price based on selection
+    const totalPrice = hasPartner ? relPriceVal : basePriceVal;
+
+    // Original Price (MRP) based on selection
+    const originalPrice = hasPartner ? relMrpVal : baseMrpVal;
+
+    const currencySymbol = baseProduct?.currency === 'USD' ? '$' : '₹';
 
     const handleFormSubmit = (data) => {
-        const payload = { ...data, totalPrice, currency: 'INR' };
+        const payload = { ...data, totalPrice, currency: baseProduct?.currency || 'INR' };
         if (onSubmit) onSubmit(payload);
     };
 
@@ -108,7 +128,9 @@ export function UserDetailsForm({ onSubmit, isProcessing = false }) {
                                         {...register('hasPartner')}
                                     />
                                     <label htmlFor="hasPartner" className="text-sm font-medium text-gray-700 cursor-pointer select-none">
-                                        Include Partner Compatibility Report <span className="text-[var(--color-primary)] font-bold">(+₹{partnerPrice})</span>
+                                        Include Partner Compatibility Report <span className="text-[var(--color-primary)] font-bold">
+                                            ({partnerUpgradeCost > 0 ? '+' : ''}{currencySymbol}{partnerUpgradeCost})
+                                        </span>
                                     </label>
                                 </div>
                             )}
@@ -167,11 +189,12 @@ export function UserDetailsForm({ onSubmit, isProcessing = false }) {
             {/* Right Column: Sticky Price Display (Desktop) & Fixed Bottom Bar (Mobile) */}
             {/* Right Column: Sticky Price Display (Desktop) & Fixed Bottom Bar (Mobile) */}
             <PriceDisplay
-                basePrice={basePrice}
-                partnerPrice={partnerPrice}
+                basePrice={basePriceVal}
+                partnerPrice={partnerUpgradeCost}
                 hasPartner={hasPartner}
                 totalPrice={totalPrice}
-                originalPrice={totalPrice + 200} // Mock Original Price for "Slash" effect
+                originalPrice={originalPrice} // Now using real MRP from DB
+                currency={currencySymbol}
                 formId="numerology-form"
                 isSubmitting={isSubmitting || isProcessing}
             />

@@ -8,7 +8,7 @@ export function Footer() {
                     {/* Col 1: Brand */}
                     <div className="flex flex-col">
                         <h3 className="text-[var(--color-gold)] font-display text-base font-semibold uppercase tracking-wider mb-6">
-                            About Sankhya
+                            About DevSankhya
                         </h3>
                         <p className="text-sm leading-relaxed opacity-90">
                             Unlocking human potential through the ancient science of numbers.
@@ -67,7 +67,7 @@ export function Footer() {
 
                 <div className="pt-8 border-t border-[#4A3B32] text-center">
                     <p className="text-[#C0A080] text-sm">
-                        &copy; 2025-2026 Sankhya Vedic Numerology. All rights reserved.
+                        &copy; 2025-2026 DevSankhya Vedic Numerology. All rights reserved.
                     </p>
                 </div>
             </div>
