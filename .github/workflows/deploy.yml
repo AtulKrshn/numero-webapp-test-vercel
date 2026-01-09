@@ -30,17 +30,17 @@ jobs:
       # 4. Debug env (learning from senior)
       - name: Debug Env Vars
         env:
-          DEVSANKHYA_VITE_API_KEY: ${{ secrets.DEVSANKHYA_VITE_API_KEY }}
-          DEVSANKHYA_VITE_API_BASE_URL: ${{ secrets.DEVSANKHYA_VITE_API_BASE_URL }}
+          VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
         run: |
-          echo "API BASE URL present: ${DEVSANKHYA_VITE_API_BASE_URL:+YES}"
-          echo "API KEY present: ${DEVSANKHYA_VITE_API_KEY:+YES}"
+          echo "API BASE URL present: ${VITE_API_BASE_URL:+YES}"
+          echo "API KEY present: ${VITE_API_KEY:+YES}"
 
       # 5. Build with explicit env injection
       - name: Build
         env:
-          DEVSANKHYA_VITE_API_KEY: ${{ secrets.DEVSANKHYA_VITE_API_KEY }}
-          DEVSANKHYA_VITE_API_BASE_URL: ${{ secrets.DEVSANKHYA_VITE_API_BASE_URL }}
+          VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
         run: npm run build
 
       # 6. Prepare server directories (NO nginx restart yet)
