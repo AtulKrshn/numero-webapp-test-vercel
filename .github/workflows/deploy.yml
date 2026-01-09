@@ -77,4 +77,5 @@ jobs:
           port: 2222
           script: |
             cd ~/apps/devsankhya
-            docker compose exec nginx nginx -s reload || docker compose restart nginx
+            docker compose down nginx
+            docker compose up -d nginx
