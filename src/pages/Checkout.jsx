@@ -2,28 +2,65 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { createOrder, verifyPayment } from '../services/api';
+import { createOrder, verifyPayment, checkCoupon } from '../services/api';
 
 export function Checkout() {
     const location = useLocation();
     const navigate = useNavigate();
     const [isProcessing, setIsProcessing] = useState(false);
 
+    // Coupon State
+    const [couponCode, setCouponCode] = useState('');
+    const [couponMessage, setCouponMessage] = useState('');
+    const [isCouponApplied, setIsCouponApplied] = useState(false);
+    const [discountAmount, setDiscountAmount] = useState(0);
+    const [finalPrice, setFinalPrice] = useState(0);
+
     // Initial State Check
-    // If user accesses /checkout directly without data, redirect to Home
     useEffect(() => {
         if (!location.state || !location.state.formData || !location.state.selectedProduct) {
             navigate('/', { replace: true });
+        } else {
+            // Initialize Final Price
+            setFinalPrice(location.state.totalPrice);
         }
     }, [location, navigate]);
 
     if (!location.state || !location.state.formData || !location.state.selectedProduct) {
-        return null; // Avoid flicker before redirect
+        return null;
     }
 
     const { formData, selectedProduct, totalPrice, currency } = location.state;
 
-    // Payment Logic Logic (Moved from Home.jsx)
+    // Coupon Handler
+    const handleApplyCoupon = async () => {
+        if (!couponCode.trim()) return;
+        setIsProcessing(true);
+        setCouponMessage('');
+        try {
+            const result = await checkCoupon(couponCode, [selectedProduct.sku]);
+            if (result.valid) {
+                setDiscountAmount(result.discount_amount);
+                setFinalPrice(result.final_amount);
+                setIsCouponApplied(true);
+                setCouponMessage(`Success! Coupon applied: ${result.message}`);
+            } else {
+                setCouponMessage(`Invalid Coupon: ${result.message}`);
+                setIsCouponApplied(false);
+                setFinalPrice(totalPrice); // Reset
+                setDiscountAmount(0);
+            }
+        } catch (error) {
+            console.error("Coupon Error:", error);
+            setCouponMessage(error.message || "Failed to validate coupon");
+            setIsCouponApplied(false);
+            setFinalPrice(totalPrice);
+            setDiscountAmount(0);
+        } finally {
+            setIsProcessing(false);
+        }
+    };
+
     const handlePayment = async () => {
         setIsProcessing(true);
         try {
@@ -31,6 +68,7 @@ export function Checkout() {
             const payload = {
                 email: formData.email,
                 product_skus: [selectedProduct.sku],
+                coupon_code: isCouponApplied ? couponCode : null, // Include Coupon
                 primary_name: formData.name,
                 primary_gender: formData.gender,
                 primary_dob: formData.dob,
@@ -42,8 +80,10 @@ export function Checkout() {
                 partner_tob: formData.partnerTob ? (formData.partnerTob.length === 5 ? `${formData.partnerTob}:00` : formData.partnerTob) : null,
                 partner_pob: formData.partnerPob || null,
                 additional_metadata: {
-                    amount_at_checkout: totalPrice,
-                    currency_at_checkout: currency
+                    amount_at_checkout: finalPrice,
+                    currency_at_checkout: currency,
+                    original_price: totalPrice,
+                    discount_applied: discountAmount
                 }
             };
 
@@ -51,10 +91,22 @@ export function Checkout() {
             const order = await createOrder(payload);
             console.log("Order Created:", order);
 
+            // 2.5 Check if 100% Discount (Immediate Success)
+            if (order.amount === 0 && order.gateway_order_id.startsWith('coupon_')) {
+                navigate('/success', {
+                    state: {
+                        orderData: formData,
+                        payment: { razorpay_payment_id: 'COUPON_FREE' },
+                        status: 'confirmed'
+                    }
+                });
+                return;
+            }
+
             // 3. Open Razorpay
             const options = {
                 key: order.key_id,
-                amount: order.amount * 100,
+                amount: order.amount * 100, // Amount is from Backend Response (already discounted)
                 currency: order.currency,
                 name: "DevSankhya Numerology",
                 description: selectedProduct.name || "Vedic Numerology Report 2026",
@@ -131,7 +183,7 @@ export function Checkout() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-                    {/* Customer Details Card (Moved to First) */}
+                    {/* Customer Details Card */}
                     <Card>
                         <CardHeader>
                             <CardTitle>Customer Details</CardTitle>
@@ -170,14 +222,60 @@ export function Checkout() {
                             <div className="flex justify-between items-start border-b pb-4">
                                 <div>
                                     <h3 className="font-medium text-gray-900">{selectedProduct.name}</h3>
-                                    {/* SKU Hidden as per request */}
                                 </div>
                                 <span className="font-semibold text-gray-900">{currency === 'INR' ? '₹' : currency} {totalPrice}</span>
                             </div>
 
-                            <div className="flex justify-between items-center text-lg font-bold text-[var(--color-primary)]">
+                            {/* Coupon Input Section */}
+                            <div className="py-2 space-y-2">
+                                <label className="text-sm font-medium text-gray-700">Have a Coupon?</label>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Code"
+                                        value={couponCode}
+                                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                                        className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)] sm:text-sm p-2 border"
+                                        disabled={isCouponApplied}
+                                    />
+                                    {!isCouponApplied ? (
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={handleApplyCoupon}
+                                            disabled={isProcessing || !couponCode}
+                                        >
+                                            Apply
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => { setIsCouponApplied(false); setDiscountAmount(0); setFinalPrice(totalPrice); setCouponCode(''); setCouponMessage(''); }}
+                                            className="text-red-600 hover:text-red-700"
+                                        >
+                                            Remove
+                                        </Button>
+                                    )}
+                                </div>
+                                {couponMessage && (
+                                    <p className={`text-xs ${isCouponApplied ? 'text-green-600' : 'text-red-600'}`}>
+                                        {couponMessage}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* Discount Logic */}
+                            {isCouponApplied && discountAmount > 0 && (
+                                <div className="flex justify-between items-center text-green-700 font-medium">
+                                    <span>Discount Applied</span>
+                                    <span>- {currency === 'INR' ? '₹' : currency} {discountAmount}</span>
+                                </div>
+                            )}
+
+                            <div className="flex justify-between items-center text-lg font-bold text-[var(--color-primary)] pt-2 border-t">
                                 <span>Total to Pay</span>
-                                <span>{currency === 'INR' ? '₹' : currency} {totalPrice}</span>
+                                <span>{currency === 'INR' ? '₹' : currency} {finalPrice}</span>
                             </div>
                         </CardContent>
                     </Card>
@@ -190,7 +288,10 @@ export function Checkout() {
                         isLoading={isProcessing}
                         className="w-full md:w-auto md:px-12 py-3 text-lg"
                     >
-                        Pay {currency === 'INR' ? '₹' : currency} {totalPrice} Securely
+                        {finalPrice > 0
+                            ? `Pay ${currency === 'INR' ? '₹' : currency} ${finalPrice} Securely`
+                            : `Get Report Now (Free)`
+                        }
                     </Button>
                 </div>
 
