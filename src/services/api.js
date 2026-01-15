@@ -11,7 +11,7 @@ const api = axios.create({
 
 console.log('API Initialized with Base URL:', api.defaults.baseURL);
 
-// Request interceptor (placeholder for future auth tokens)
+// Request interceptor
 api.interceptors.request.use((config) => {
     return config;
 }, (error) => {
@@ -37,7 +37,23 @@ export const fetchProducts = async () => {
     }
 };
 
-// 2. Helper for Legacy Components (Optional, but good for backward compatibility)
+export const checkCoupon = async (code, skus) => {
+    try {
+        const response = await api.post('/orders/check-coupon', {
+            coupon_code: code,
+            product_skus: skus
+        });
+        return response.data;
+    } catch (error) {
+        // If 400 (Invalid), return the error message nicely
+        if (error.response && error.response.status === 400 && error.response.data.detail) {
+            throw new Error(error.response.data.detail);
+        }
+        throw error;
+    }
+};
+
+// 2. Helper for Legacy Components
 export const getPricingConfig = async () => {
     const products = await fetchProducts();
 
@@ -45,8 +61,8 @@ export const getPricingConfig = async () => {
     const partnerProduct = products.find(p => p.sku === 'NUM-REL-2026');
 
     return {
-        base: baseProduct ? baseProduct.sale_price : 51,
-        partner: partnerProduct ? partnerProduct.sale_price : 50,
+        base: baseProduct ? baseProduct.sale_price : 500, // Updated default
+        partner: partnerProduct ? partnerProduct.sale_price : 300, // Updated default
         currency: baseProduct ? baseProduct.currency : 'INR'
     };
 };
