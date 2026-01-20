@@ -17,7 +17,7 @@ export function PriceDisplay({
             {/* Desktop Sticky Sidebar */}
             <div className="hidden lg:block sticky top-6 self-start">
                 <Card>
-                    <CardContent className="p-6 space-y-6">
+                    <CardContent className="p-6 pt-8 space-y-6">
                         <div className="space-y-4">
                             <h3 className="font-display text-lg font-semibold text-gray-900 border-b pb-2">Order Summary</h3>
 
