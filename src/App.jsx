@@ -8,9 +8,12 @@ import { PaymentFailed } from './pages/PaymentFailed';
 import { Checkout } from './pages/Checkout';
 import { NotFound } from './pages/NotFound'
 
+import { PixelRouteTracker } from './components/PixelRouteTracker'
+
 function App() {
   return (
     <Router>
+      <PixelRouteTracker />
       <ToastProvider>
         <Layout>
           <Routes>

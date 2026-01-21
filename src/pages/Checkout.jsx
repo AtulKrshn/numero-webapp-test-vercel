@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { createOrder, verifyPayment, checkCoupon } from '../services/api';
+import { trackEvent } from '../utils/pixel';
 
 export function Checkout() {
     const location = useLocation();
@@ -31,6 +32,19 @@ export function Checkout() {
     }
 
     const { formData, selectedProduct, totalPrice, currency } = location.state;
+
+    // Track InitiateCheckout on load
+    useEffect(() => {
+        if (selectedProduct) {
+            trackEvent('InitiateCheckout', {
+                currency: 'INR',
+                value: totalPrice,
+                content_ids: [selectedProduct.sku],
+                content_type: 'product',
+                num_items: 1
+            });
+        }
+    }, []);
 
     // Coupon Handler
     const handleApplyCoupon = async () => {
@@ -83,7 +97,10 @@ export function Checkout() {
                     amount_at_checkout: finalPrice,
                     currency_at_checkout: currency,
                     original_price: totalPrice,
-                    discount_applied: discountAmount
+                    discount_applied: discountAmount,
+                    // New Fields
+                    report_language: formData.reportLanguage || 'en',
+                    personal_question: formData.personalQuestion || null
                 }
             };
 
@@ -119,6 +136,14 @@ export function Checkout() {
                             provider_order_id: response.razorpay_order_id,
                             signature: response.razorpay_signature
                         });
+
+                        // Track Meta Pixel Purchase
+                        trackEvent('Purchase', {
+                            currency: 'INR',
+                            value: order.amount, // amount is in Rupees
+                            order_id: response.razorpay_order_id
+                        });
+
                         // 5. Navigate to Success
                         navigate('/success', {
                             state: {

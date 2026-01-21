@@ -4,6 +4,7 @@ import { TrustSection } from '../components/TrustSection';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { fetchProducts } from '../services/api';
+import { trackEvent } from '../utils/pixel';
 
 export function Home() {
     const navigate = useNavigate();
@@ -98,6 +99,12 @@ export function Home() {
             const totalPrice = data.hasPartner ? Number(partnerPrice) : Number(basePrice);
 
             // Redirect to Intermediate Checkout Page
+            // Track Meta Pixel Lead
+            trackEvent('Lead', {
+                currency: 'INR',
+                content_name: selectedProduct.name
+            });
+
             navigate('/checkout', {
                 state: {
                     formData: data,
