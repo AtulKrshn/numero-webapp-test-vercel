@@ -17,13 +17,43 @@ export function Checkout() {
     const [discountAmount, setDiscountAmount] = useState(0);
     const [finalPrice, setFinalPrice] = useState(0);
 
-    // Initial State Check
+    // Initial State Check & Auto-Coupon
     useEffect(() => {
         if (!location.state || !location.state.formData || !location.state.selectedProduct) {
             navigate('/', { replace: true });
-        } else {
-            // Initialize Final Price
-            setFinalPrice(location.state.totalPrice);
+            return;
+        }
+
+        // Initialize Final Price
+        setFinalPrice(location.state.totalPrice);
+
+        // Auto-Apply Coupon from Storage
+        const autoCoupon = sessionStorage.getItem('auto_coupon');
+        if (autoCoupon) {
+            setCouponCode(autoCoupon);
+            // Trigger verification automatically
+            const verifyAutoCoupon = async () => {
+                setIsProcessing(true);
+                try {
+                    const result = await checkCoupon(autoCoupon, [location.state.selectedProduct.sku]);
+                    if (result.valid) {
+                        setDiscountAmount(result.discount_amount);
+                        setFinalPrice(result.final_amount);
+                        setIsCouponApplied(true);
+                        setCouponMessage(`Auto-applied: ${result.message}`);
+                    } else {
+                        // Show visible error for auto-apply
+                        setCouponMessage(`Auto-coupon invalid: ${result.message}`);
+                        console.log("Auto-coupon invalid:", result.message);
+                    }
+                } catch (err) {
+                    setCouponMessage(`Auto-coupon failed: ${err.message}`);
+                    console.log("Auto-coupon error:", err);
+                } finally {
+                    setIsProcessing(false);
+                }
+            };
+            verifyAutoCoupon();
         }
     }, [location, navigate]);
 

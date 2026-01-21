@@ -9,12 +9,14 @@ import { Checkout } from './pages/Checkout';
 import { NotFound } from './pages/NotFound'
 
 import { PixelRouteTracker } from './components/PixelRouteTracker'
+import { CouponCapture } from './components/CouponCapture'
 
 function App() {
   return (
     <Router>
       <PixelRouteTracker />
       <ToastProvider>
+        <CouponCapture />
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
