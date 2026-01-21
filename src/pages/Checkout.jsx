@@ -47,7 +47,7 @@ export function Checkout() {
                         console.log("Auto-coupon invalid:", result.message);
                     }
                 } catch (err) {
-                    setCouponMessage(`Auto-coupon failed: ${err.message}`);
+                    setCouponMessage(`oupon failed: ${err.message}`);
                     console.log("Auto-coupon error:", err);
                 } finally {
                     setIsProcessing(false);
