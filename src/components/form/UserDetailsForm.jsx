@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Input } from '../ui/Input';
 import { Select } from '../ui/Select';
@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/Card
 
 import { PriceDisplay } from '../ui/PriceDisplay';
 import { Flag } from 'lucide-react';
+import { checkCoupon } from '../../services/api';
 
 export function UserDetailsForm({ onSubmit, isProcessing = false, products = [], isLoadingProducts = true }) {
     const {
@@ -40,15 +41,63 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
     const partnerUpgradeCost = relPriceVal - basePriceVal;
 
     // Total Price based on selection
-    const totalPrice = hasPartner ? relPriceVal : basePriceVal;
+    const rawTotalPrice = hasPartner ? relPriceVal : basePriceVal;
 
     // Original Price (MRP) based on selection
     const originalPrice = hasPartner ? relMrpVal : baseMrpVal;
 
     const currencySymbol = baseProduct?.currency === 'USD' ? '$' : '₹';
 
+    // Coupon State
+    const [couponDiscount, setCouponDiscount] = useState(0);
+    const [appliedCoupon, setAppliedCoupon] = useState(null);
+
+    // Auto-Apply Coupon Effect
+    useEffect(() => {
+        const checkAutoCoupon = async () => {
+            const autoCoupon = sessionStorage.getItem('auto_coupon');
+            if (autoCoupon) {
+                // Determine current SKU
+                const currentSku = hasPartner ? partnerProduct?.sku : baseProduct?.sku;
+
+                if (!currentSku) return;
+
+                try {
+                    const result = await checkCoupon(autoCoupon, [currentSku]);
+                    if (result.valid) {
+                        setCouponDiscount(result.discount_amount);
+                        setAppliedCoupon(autoCoupon);
+                    } else {
+                        setCouponDiscount(0);
+                        setAppliedCoupon(null);
+                    }
+                } catch (error) {
+                    console.warn("Auto-coupon check failed on landing:", error);
+                    setCouponDiscount(0);
+                }
+            }
+        };
+
+        if (products.length > 0) {
+            checkAutoCoupon();
+        }
+    }, [hasPartner, products, baseProduct, partnerProduct]);
+
+    const finalDisplayPrice = Math.max(0, rawTotalPrice - couponDiscount);
+
     const handleFormSubmit = (data) => {
-        const payload = { ...data, totalPrice, currency: baseProduct?.currency || 'INR' };
+        // We pass the RAW price to checkout, because checkout re-validates the coupon anyway.
+        // OR we can pass the discounted one? 
+        // Best practice: Pass the raw items and letting Checkout handle calculations is safer,
+        // BUT Checkout expects `totalPrice` in location.state to display immediately.
+        // If we send raw price, Checkout might flash raw then discount.
+        // If we send discounted price, Checkout might double discount if we aren't careful?
+        // Let's check `Checkout.jsx`.
+        // Checkout uses `location.state.totalPrice` as `finalPrice` INITIALLY.
+        // Then it runs `verifyAutoCoupon` and OVERWRITES it.
+        // So passing rawTotalPrice here is CORRECT. Checkout will re-apply the discount.
+
+        const payload = { ...data, totalPrice: rawTotalPrice, currency: baseProduct?.currency || 'INR', hasPartner };
         if (onSubmit) onSubmit(payload);
     };
 
@@ -225,14 +274,22 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                 </Card>
             </div>
 
-            {/* Right Column: Sticky Price Display (Desktop) & Fixed Bottom Bar (Mobile) */}
+            {/* Sticky Coupon Banner */}
+            {couponDiscount > 0 && (
+                <div className="fixed top-[64px] left-0 right-0 z-40 bg-green-600 text-white py-2 shadow-md animate-in slide-in-from-top-2">
+                    <div className="max-w-7xl mx-auto px-4 text-center font-medium">
+                        🎉 Coupon '{appliedCoupon}' applied! You saved <span className="font-bold">{currencySymbol}{couponDiscount}</span>
+                    </div>
+                </div>
+            )}
+
             {/* Right Column: Sticky Price Display (Desktop) & Fixed Bottom Bar (Mobile) */}
             <PriceDisplay
                 basePrice={basePriceVal}
                 partnerPrice={partnerUpgradeCost}
                 hasPartner={hasPartner}
-                totalPrice={totalPrice}
-                originalPrice={originalPrice} // Now using real MRP from DB
+                totalPrice={finalDisplayPrice}
+                originalPrice={originalPrice}
                 currency={currencySymbol}
                 formId="numerology-form"
                 isSubmitting={isSubmitting || isProcessing}
