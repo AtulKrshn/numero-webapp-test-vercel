@@ -12,7 +12,7 @@ export function TrustSection() {
                         What's Inside Your Report
                     </h2>
                     <p className="text-[var(--color-secondary)]">
-                        A complete verified breakdown of the 11+ page PDF delivered to your inbox.
+                        A complete Handcrafted breakdown with the PDF delivered to your mail inbox.
                     </p>
                 </div>
 
