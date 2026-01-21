@@ -103,7 +103,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                                 />
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Input
                                     label="Time of Birth (Optional)"
                                     type="time"
@@ -117,7 +117,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                                     error={errors.pob?.message}
                                     {...register('pob')}
                                 />
-                            </div>
+                            </div> */}
 
                             {ENABLE_PARTNER_FEATURE && (
                                 <div className="flex items-center space-x-2 pt-4 border-t">
@@ -135,9 +135,48 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                                 </div>
                             )}
 
+
+
+                            {/* Personal Customization Section */}
+                            <div className="space-y-4">
+                                {/* <h3 className="text-sm font-medium text-gray-900">Personalize Your Report</h3> */}
+
+                                {/* 
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <Select
+                                        label="Report Language"
+                                        error={errors.reportLanguage?.message}
+                                        {...register('reportLanguage', { required: 'Language is required' })}
+                                        defaultValue="en"
+                                    >
+                                        <option value="en">English (Default)</option>
+                                        <option value="hi">Hindi</option>
+                                    </Select>
+                                </div> 
+                                */}
+
+                                <div className="space-y-1">
+                                    <label className="block text-sm font-medium text-gray-700">Ask Your Specific Question</label>
+                                    <textarea
+                                        className={`
+                                            flex w-full rounded-md border bg-white px-3 py-2 text-sm placeholder:text-gray-400 
+                                            focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent 
+                                            disabled:cursor-not-allowed disabled:opacity-50
+                                            ${errors.personalQuestion ? 'border-red-500 focus:ring-red-500' : 'border-gray-300'}
+                                        `}
+                                        rows={3}
+                                        placeholder="e.g., Will I travel abroad this year?"
+                                        {...register('personalQuestion', { required: 'Personal Question is required' })}
+                                    />
+                                    {errors.personalQuestion && (
+                                        <p className="text-xs text-red-500">{errors.personalQuestion.message}</p>
+                                    )}
+                                </div>
+                            </div>
+
                             <div className={`
                     grid gap-4 overflow-hidden transition-all duration-300 ease-in-out
-                    ${hasPartner ? 'max-h-[500px] opacity-100 pt-2' : 'max-h-0 opacity-0'}
+                    ${hasPartner ? 'max-h-[600px] opacity-100 pt-2' : 'max-h-0 opacity-0'}
                   `}>
                                 <div className="text-sm font-semibold text-gray-900 border-b pb-1 mb-2">Partner Details</div>
 
@@ -198,6 +237,6 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                 formId="numerology-form"
                 isSubmitting={isSubmitting || isProcessing}
             />
-        </div>
+        </div >
     );
 }
