@@ -129,8 +129,8 @@ export function Checkout() {
                     original_price: totalPrice,
                     discount_applied: discountAmount,
                     // New Fields
-                    report_language: formData.reportLanguage || 'en',
-                    personal_question: formData.personalQuestion || null
+                    language: formData.reportLanguage || 'en',
+                    personal_ques: formData.personalQuestion || null
                 }
             };
 
