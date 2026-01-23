@@ -287,7 +287,7 @@ export function Checkout() {
                                         placeholder="Enter Code"
                                         value={couponCode}
                                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                                        className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)] sm:text-sm p-2 border"
+                                        className="flex-1 min-w-0 rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)] sm:text-sm p-2 border"
                                         disabled={isCouponApplied}
                                     />
                                     {!isCouponApplied ? (
