@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -9,6 +9,7 @@ export function Checkout() {
     const location = useLocation();
     const navigate = useNavigate();
     const [isProcessing, setIsProcessing] = useState(false);
+    const sentInitiateCheckout = useRef(false);
 
     // Coupon State
     const [couponCode, setCouponCode] = useState('');
@@ -65,7 +66,7 @@ export function Checkout() {
 
     // Track InitiateCheckout on load
     useEffect(() => {
-        if (selectedProduct) {
+        if (selectedProduct && !sentInitiateCheckout.current) {
             trackEvent('InitiateCheckout', {
                 currency: 'INR',
                 value: totalPrice,
@@ -73,6 +74,7 @@ export function Checkout() {
                 content_type: 'product',
                 num_items: 1
             });
+            sentInitiateCheckout.current = true;
         }
     }, []);
 
