@@ -167,19 +167,14 @@ export function Checkout() {
                             signature: response.razorpay_signature
                         });
 
-                        // Track Meta Pixel Purchase
-                        trackEvent('Purchase', {
-                            currency: 'INR',
-                            value: order.amount, // amount is in Rupees
-                            order_id: response.razorpay_order_id
-                        });
-
-                        // 5. Navigate to Success
+                        // 5. Navigate to Success (Pass amount for Pixel tracking)
                         navigate('/success', {
                             state: {
                                 orderData: formData,
                                 payment: response,
-                                status: 'confirmed'
+                                status: 'confirmed',
+                                amount: order.amount,
+                                currency: order.currency
                             }
                         });
                     } catch (err) {

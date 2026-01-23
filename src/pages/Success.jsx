@@ -1,12 +1,26 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { trackEvent } from '../utils/pixel';
 
 export function Success() {
     const navigate = useNavigate();
     const location = useLocation();
-    const { orderData } = location.state || {};
+    const { orderData, payment, amount, currency } = location.state || {};
+    const hasTracked = useRef(false);
+
+    useEffect(() => {
+        if (!hasTracked.current && location.state?.status === 'confirmed' && payment) {
+            // Track Meta Pixel Purchase reliably on page load
+            trackEvent('Purchase', {
+                currency: currency || 'INR',
+                value: amount, // Received from Checkout
+                order_id: payment.razorpay_order_id
+            });
+            hasTracked.current = true;
+        }
+    }, [location.state, payment, amount, currency]);
 
     return (
         <div className="max-w-md mx-auto pt-10">
