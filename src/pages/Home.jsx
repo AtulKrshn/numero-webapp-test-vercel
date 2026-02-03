@@ -14,11 +14,26 @@ export function Home() {
     const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
     // Fetch Products on Mount
+    const sentViewContent = React.useRef(false);
+
     useEffect(() => {
         const loadProducts = async () => {
             const data = await fetchProducts();
             setProducts(data);
             setIsLoadingProducts(false);
+
+            // Track ViewContent ONCE when products are ready
+            if (!sentViewContent.current && data.length > 0) {
+                const mainProduct = data.find(p => p.sku.includes('FULL')) || data[0];
+                trackEvent('ViewContent', {
+                    content_name: mainProduct.name,
+                    content_ids: [mainProduct.sku],
+                    content_type: 'product',
+                    value: mainProduct.sale_price,
+                    currency: mainProduct.currency || 'INR'
+                });
+                sentViewContent.current = true;
+            }
         };
         loadProducts();
     }, []);
@@ -97,6 +112,18 @@ export function Home() {
             const basePrice = products.find(p => p.sku.includes('FULL') || p.sku.includes('SINGLE'))?.sale_price || 0;
             const partnerPrice = products.find(p => p.sku.includes('REL') || p.sku.includes('PARTNER'))?.sale_price || 0;
             const totalPrice = data.hasPartner ? Number(partnerPrice) : Number(basePrice);
+
+            // Initialize Advanced Matching (Hash & Send)
+            // This links future events (Purchase) to this user
+            // Initialize Advanced Matching (Hash & Send)
+            // This links future events (Purchase) to this user
+            await initAdvancedMatching({
+                email: data.email,
+                name: data.name,
+                dob: data.dob,
+                gender: data.gender,
+                phone: data.phone || null
+            });
 
             // Redirect to Intermediate Checkout Page
             // Track Meta Pixel Lead

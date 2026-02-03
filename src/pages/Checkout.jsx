@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../compone
 import { Button } from '../components/ui/Button';
 import { createOrder, verifyPayment, checkCoupon } from '../services/api';
 import { trackEvent } from '../utils/pixel';
+import { getCookie } from '../utils/cookies';
 
 export function Checkout() {
     const location = useLocation();
@@ -132,13 +133,28 @@ export function Checkout() {
                     discount_applied: discountAmount,
                     // New Fields
                     language: formData.reportLanguage || 'en',
-                    personal_ques: formData.personalQuestion || null
+                    personal_ques: formData.personalQuestion || null,
+
+                    // CAPI Tracking (Quick & Dirty)
+                    _fbp: getCookie('_fbp'),
+                    _fbc: getCookie('_fbc'),
+                    user_agent: navigator.userAgent,
+                    request_url: window.location.href,
+                    capi_flag: true
                 }
             };
 
             // 2. Create Order
             const order = await createOrder(payload);
             console.log("Order Created:", order);
+
+            // Track Meta Pixel AddPaymentInfo (High Intent)
+            trackEvent('AddPaymentInfo', {
+                currency: 'INR',
+                value: finalPrice,
+                content_ids: [selectedProduct.sku],
+                content_type: 'product'
+            });
 
             // 2.5 Check if 100% Discount (Immediate Success)
             if (order.amount === 0 && order.gateway_order_id.startsWith('coupon_')) {
@@ -176,7 +192,8 @@ export function Checkout() {
                                 payment: response,
                                 status: 'confirmed',
                                 amount: order.amount,
-                                currency: order.currency
+                                currency: order.currency,
+                                sku: selectedProduct.sku // Pass SKU for Pixel
                             }
                         });
                     } catch (err) {
@@ -195,7 +212,9 @@ export function Checkout() {
                                 state: {
                                     orderData: formData,
                                     payment: response,
-                                    status: 'pending_sync'
+                                    status: 'pending_sync',
+                                    amount: order.amount,
+                                    currency: order.currency
                                 }
                             });
                         }
