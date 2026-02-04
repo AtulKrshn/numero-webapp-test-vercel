@@ -27,7 +27,7 @@ function App() {
           </Routes>
 
           <div className="mt-8 text-gray-600 text-center text-sm">
-            <p>Environment: {import.meta.env.MODE}</p>
+            {import.meta.env.DEV && <p>Environment: {import.meta.env.MODE}</p>}
           </div>
         </Layout>
       </ToastProvider>
