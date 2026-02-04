@@ -136,11 +136,12 @@ export function Checkout() {
                     personal_ques: formData.personalQuestion || null,
 
                     // CAPI Tracking (Quick & Dirty)
-                    _fbp: getCookie('_fbp'),
-                    _fbc: getCookie('_fbc'),
+                    fbp: getCookie('_fbp'),
+                    fbc: getCookie('_fbc'),
                     user_agent: navigator.userAgent,
                     request_url: window.location.href,
-                    capi_flag: true
+                    capi_flag: true,
+                    lead_ref_id: location.state.lead_ref_id || null // Pass CAPI Dedup ID from Home
                 }
             };
 

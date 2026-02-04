@@ -28,8 +28,7 @@
       s.parentNode.insertBefore(t, s)
     }(window, document, 'script',
       'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '1556179499045689');
-    // fbq('track', 'PageView'); // Removed to avoid double-firing with PixelRouteTracker
+    // Init moved to main.jsx for Environment Variable support
   </script>
 
   <!-- End Meta Pixel Code -->
@@ -39,8 +38,7 @@
 </head>
 
 <body>
-  <noscript><img height="1" width="1" style="display:none"
-      src="https://www.facebook.com/tr?id=1556179499045689&ev=PageView&noscript=1" /></noscript>
+  <!-- NoScript removed to avoid hardcoded ID -->
 
 
   <div id="root"></div>

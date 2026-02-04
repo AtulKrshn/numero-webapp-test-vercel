@@ -1,4 +1,4 @@
-const PIXEL_ID = '1556179499045689';
+const PIXEL_ID = import.meta.env.VITE_META_PIXEL_ID;
 
 // Helper: SHA-256 Hashing for Privacy (Async)
 async function sha256(message) {

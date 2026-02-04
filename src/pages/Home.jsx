@@ -4,7 +4,7 @@ import { TrustSection } from '../components/TrustSection';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { fetchProducts } from '../services/api';
-import { trackEvent } from '../utils/pixel';
+import { trackEvent, initAdvancedMatching } from '../utils/pixel';
 
 export function Home() {
     const navigate = useNavigate();
@@ -125,11 +125,17 @@ export function Home() {
                 phone: data.phone || null
             });
 
+            // Generate Deduplication ID for Lead
+            // This allows us to match Frontend 'Lead' with Backend 'Lead'
+            const lead_ref_id = crypto.randomUUID ? crypto.randomUUID() : 'lead_' + Date.now() + Math.random().toString(36).substr(2, 9);
+
             // Redirect to Intermediate Checkout Page
             // Track Meta Pixel Lead
             trackEvent('Lead', {
                 currency: 'INR',
                 content_name: selectedProduct.name
+            }, {
+                eventID: lead_ref_id // Dedup ID
             });
 
             navigate('/checkout', {
@@ -137,7 +143,8 @@ export function Home() {
                     formData: data,
                     selectedProduct: selectedProduct,
                     totalPrice: totalPrice,
-                    currency: selectedProduct.currency || 'INR'
+                    currency: selectedProduct.currency || 'INR',
+                    lead_ref_id: lead_ref_id // Pass to Checkout -> Backend
                 }
             });
 
