@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { createOrder, verifyPayment, checkCoupon } from '../services/api';
 import { trackEvent } from '../utils/pixel';
+import { getCookie } from '../utils/cookies';
 
 export function Checkout() {
     const location = useLocation();
     const navigate = useNavigate();
     const [isProcessing, setIsProcessing] = useState(false);
+    const sentInitiateCheckout = useRef(false);
 
     // Coupon State
     const [couponCode, setCouponCode] = useState('');
@@ -65,7 +67,7 @@ export function Checkout() {
 
     // Track InitiateCheckout on load
     useEffect(() => {
-        if (selectedProduct) {
+        if (selectedProduct && !sentInitiateCheckout.current) {
             trackEvent('InitiateCheckout', {
                 currency: 'INR',
                 value: totalPrice,
@@ -73,6 +75,7 @@ export function Checkout() {
                 content_type: 'product',
                 num_items: 1
             });
+            sentInitiateCheckout.current = true;
         }
     }, []);
 
@@ -130,13 +133,29 @@ export function Checkout() {
                     discount_applied: discountAmount,
                     // New Fields
                     language: formData.reportLanguage || 'en',
-                    personal_ques: formData.personalQuestion || null
+                    personal_ques: formData.personalQuestion || null,
+
+                    // CAPI Tracking (Quick & Dirty)
+                    fbp: getCookie('_fbp'),
+                    fbc: getCookie('_fbc'),
+                    user_agent: navigator.userAgent,
+                    request_url: window.location.href,
+                    capi_flag: true,
+                    lead_ref_id: location.state.lead_ref_id || null // Pass CAPI Dedup ID from Home
                 }
             };
 
             // 2. Create Order
             const order = await createOrder(payload);
             console.log("Order Created:", order);
+
+            // Track Meta Pixel AddPaymentInfo (High Intent)
+            trackEvent('AddPaymentInfo', {
+                currency: 'INR',
+                value: finalPrice,
+                content_ids: [selectedProduct.sku],
+                content_type: 'product'
+            });
 
             // 2.5 Check if 100% Discount (Immediate Success)
             if (order.amount === 0 && order.gateway_order_id.startsWith('coupon_')) {
@@ -167,19 +186,15 @@ export function Checkout() {
                             signature: response.razorpay_signature
                         });
 
-                        // Track Meta Pixel Purchase
-                        trackEvent('Purchase', {
-                            currency: 'INR',
-                            value: order.amount, // amount is in Rupees
-                            order_id: response.razorpay_order_id
-                        });
-
-                        // 5. Navigate to Success
+                        // 5. Navigate to Success (Pass amount for Pixel tracking)
                         navigate('/success', {
                             state: {
                                 orderData: formData,
                                 payment: response,
-                                status: 'confirmed'
+                                status: 'confirmed',
+                                amount: order.amount,
+                                currency: order.currency,
+                                sku: selectedProduct.sku // Pass SKU for Pixel
                             }
                         });
                     } catch (err) {
@@ -198,7 +213,9 @@ export function Checkout() {
                                 state: {
                                     orderData: formData,
                                     payment: response,
-                                    status: 'pending_sync'
+                                    status: 'pending_sync',
+                                    amount: order.amount,
+                                    currency: order.currency
                                 }
                             });
                         }
@@ -290,7 +307,7 @@ export function Checkout() {
                                         placeholder="Enter Code"
                                         value={couponCode}
                                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                                        className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)] sm:text-sm p-2 border"
+                                        className="flex-1 min-w-0 rounded-md border-gray-300 shadow-sm focus:border-[var(--color-primary)] focus:ring-[var(--color-primary)] sm:text-sm p-2 border"
                                         disabled={isCouponApplied}
                                     />
                                     {!isCouponApplied ? (

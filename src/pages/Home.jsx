@@ -4,7 +4,7 @@ import { TrustSection } from '../components/TrustSection';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 import { fetchProducts } from '../services/api';
-import { trackEvent } from '../utils/pixel';
+import { trackEvent, initAdvancedMatching } from '../utils/pixel';
 
 export function Home() {
     const navigate = useNavigate();
@@ -14,11 +14,26 @@ export function Home() {
     const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
     // Fetch Products on Mount
+    const sentViewContent = React.useRef(false);
+
     useEffect(() => {
         const loadProducts = async () => {
             const data = await fetchProducts();
             setProducts(data);
             setIsLoadingProducts(false);
+
+            // Track ViewContent ONCE when products are ready
+            if (!sentViewContent.current && data.length > 0) {
+                const mainProduct = data.find(p => p.sku.includes('FULL')) || data[0];
+                trackEvent('ViewContent', {
+                    content_name: mainProduct.name,
+                    content_ids: [mainProduct.sku],
+                    content_type: 'product',
+                    value: mainProduct.sale_price,
+                    currency: mainProduct.currency || 'INR'
+                });
+                sentViewContent.current = true;
+            }
         };
         loadProducts();
     }, []);
@@ -98,11 +113,29 @@ export function Home() {
             const partnerPrice = products.find(p => p.sku.includes('REL') || p.sku.includes('PARTNER'))?.sale_price || 0;
             const totalPrice = data.hasPartner ? Number(partnerPrice) : Number(basePrice);
 
+            // Initialize Advanced Matching (Hash & Send)
+            // This links future events (Purchase) to this user
+            // Initialize Advanced Matching (Hash & Send)
+            // This links future events (Purchase) to this user
+            await initAdvancedMatching({
+                email: data.email,
+                name: data.name,
+                dob: data.dob,
+                gender: data.gender,
+                phone: data.phone || null
+            });
+
+            // Generate Deduplication ID for Lead
+            // This allows us to match Frontend 'Lead' with Backend 'Lead'
+            const lead_ref_id = crypto.randomUUID ? crypto.randomUUID() : 'lead_' + Date.now() + Math.random().toString(36).substr(2, 9);
+
             // Redirect to Intermediate Checkout Page
             // Track Meta Pixel Lead
             trackEvent('Lead', {
                 currency: 'INR',
                 content_name: selectedProduct.name
+            }, {
+                eventID: lead_ref_id // Dedup ID
             });
 
             navigate('/checkout', {
@@ -110,7 +143,8 @@ export function Home() {
                     formData: data,
                     selectedProduct: selectedProduct,
                     totalPrice: totalPrice,
-                    currency: selectedProduct.currency || 'INR'
+                    currency: selectedProduct.currency || 'INR',
+                    lead_ref_id: lead_ref_id // Pass to Checkout -> Backend
                 }
             });
 
