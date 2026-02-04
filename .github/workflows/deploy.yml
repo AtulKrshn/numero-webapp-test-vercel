@@ -32,15 +32,18 @@ jobs:
         env:
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_META_PIXEL_ID: ${{ secrets.VITE_META_PIXEL_ID }}
         run: |
           echo "API BASE URL present: ${VITE_API_BASE_URL:+YES}"
           echo "API KEY present: ${VITE_API_KEY:+YES}"
+          echo "META PIXEL ID present: ${VITE_META_PIXEL_ID:+YES}"
 
       # 5. Build with explicit env injection
       - name: Build
         env:
           VITE_API_KEY: ${{ secrets.VITE_API_KEY }}
           VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_META_PIXEL_ID: ${{ secrets.VITE_META_PIXEL_ID }}
         run: npm run build
 
       # 6. Prepare server directories (NO nginx restart yet)
