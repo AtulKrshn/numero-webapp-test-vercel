@@ -190,7 +190,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                             <div className="space-y-4">
                                 {/* <h3 className="text-sm font-medium text-gray-900">Personalize Your Report</h3> */}
 
-                                {/* 
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <Select
                                         label="Report Language"
@@ -200,9 +200,10 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                                     >
                                         <option value="en">English (Default)</option>
                                         <option value="hi">Hindi</option>
+                                        <option value="hinglish">Hinglish</option>
                                     </Select>
-                                </div> 
-                                */}
+                                </div>
+
 
                                 <div className="space-y-1">
                                     <label className="block text-sm font-medium text-gray-700">Ask Your Specific Question</label>
