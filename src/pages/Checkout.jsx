@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { createOrder, verifyPayment, checkCoupon } from '../services/api';
-import { trackEvent } from '../utils/pixel';
+import { trackEvent, initAdvancedMatching } from '../utils/pixel';
 import { getCookie } from '../utils/cookies';
 
 export function Checkout() {
@@ -111,6 +111,15 @@ export function Checkout() {
     const handlePayment = async () => {
         setIsProcessing(true);
         try {
+            // Priority: Initialize Advanced Matching with Phone (Frontend Pixel)
+            if (formData.phone) {
+                await initAdvancedMatching({
+                    phone: formData.phone,
+                    email: formData.email,
+                    firstName: formData.name.split(' ')[0]
+                });
+            }
+
             // 1. Prepare Payload matching OrderCreate schema
             const payload = {
                 email: formData.email,
@@ -132,6 +141,7 @@ export function Checkout() {
                     original_price: totalPrice,
                     discount_applied: discountAmount,
                     // New Fields
+                    phone: formData.phone || null,
                     language: formData.reportLanguage || 'en',
                     personal_ques: formData.personalQuestion || null,
 

@@ -118,19 +118,8 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                                 {...register('name', { required: 'Name is required' })}
                             />
 
-                            <Input
-                                label="Email Address"
-                                type="email"
-                                placeholder="rahul@example.com"
-                                error={errors.email?.message}
-                                {...register('email', {
-                                    required: 'Email is required',
-                                    pattern: {
-                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                                        message: "Invalid email address"
-                                    }
-                                })}
-                            />
+
+
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Select
@@ -152,6 +141,50 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                                 />
                             </div>
 
+
+                            <Input
+                                label="Email Address"
+                                type="email"
+                                placeholder="rahul@example.com"
+                                error={errors.email?.message}
+                                {...register('email', {
+                                    required: 'Email is required',
+                                    pattern: {
+                                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                                        message: "Invalid email address"
+                                    }
+                                })}
+                            />
+
+
+                            <div className="space-y-1">
+                                <label className="block text-sm font-medium text-gray-700">Phone Number (Optional)</label>
+                                <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-[var(--color-primary)]">
+                                    <span className="flex select-none items-center px-3 text-gray-500 sm:text-sm bg-gray-50 border-r border-gray-300 rounded-l-md">
+                                        +91
+                                    </span>
+                                    <input
+                                        type="tel"
+                                        className="block flex-1 border-0 bg-transparent py-2 pl-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 rounded-r-md"
+                                        placeholder="9876543210"
+                                        maxLength={10}
+                                        {...register('phone', {
+                                            pattern: {
+                                                value: /^[0-9]{10}$/,
+                                                message: "Must be 10 digits"
+                                            },
+                                            onChange: (e) => {
+                                                e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 10);
+                                            }
+                                        })}
+                                    />
+                                </div>
+                                {errors.phone && (
+                                    <p className="text-xs text-red-500">{errors.phone.message}</p>
+                                )}
+                            </div>
+
+
                             {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <Input
                                     label="Time of Birth (Optional)"
@@ -167,6 +200,8 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                                     {...register('pob')}
                                 />
                             </div> */}
+
+
 
                             {ENABLE_PARTNER_FEATURE && (
                                 <div className="flex items-center space-x-2 pt-4 border-t">
@@ -190,7 +225,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                             <div className="space-y-4">
                                 {/* <h3 className="text-sm font-medium text-gray-900">Personalize Your Report</h3> */}
 
-                                {/* 
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <Select
                                         label="Report Language"
@@ -200,9 +235,10 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                                     >
                                         <option value="en">English (Default)</option>
                                         <option value="hi">Hindi</option>
+                                        <option value="hinglish">Hinglish</option>
                                     </Select>
-                                </div> 
-                                */}
+                                </div>
+
 
                                 <div className="space-y-1">
                                     <label className="block text-sm font-medium text-gray-700">Ask Your Specific Question</label>
