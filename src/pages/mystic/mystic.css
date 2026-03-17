@@ -1,0 +1,331 @@
+.mystic-container {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: #333;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #fcfcfc;
+  overflow-x: hidden;
+}
+
+.mystic-section {
+  padding: 40px 20px;
+}
+
+/* Typography */
+.mystic-container h2 {
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 24px;
+  color: #1a1a1a;
+}
+
+.mystic-container h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.mystic-container h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #e53e3e; /* Red-ish accent like original */
+  text-align: center;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Hero Section */
+.mystic-hero {
+  text-align: center;
+  padding-top: 60px;
+  background-color: #fff;
+}
+
+.mystic-hero-img {
+  max-width: 100%;
+  height: auto;
+  margin: 20px auto;
+  display: block;
+}
+
+/* Features Grid (Hero) */
+.mystic-features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 32px 0;
+}
+
+.mystic-feature-card {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 16px;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.mystic-feature-card h3 {
+  font-size: 16px;
+  margin: 0;
+  color: #2d3748;
+}
+
+/* Lists (Benefits & Problems) */
+.mystic-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.mystic-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  background: #fff;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.mystic-list-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+/* Compare List Layout */
+.mystic-compare-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.mystic-compare-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 600px) {
+  .mystic-compare-item {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+.mystic-compare-bad, .mystic-compare-good {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.mystic-compare-bad {
+  background-color: #fff5f5;
+  border: 1px solid #fed7d7;
+}
+
+.mystic-compare-good {
+  background-color: #f0fff4;
+  border: 1px solid #c6f6d5;
+}
+
+/* Testimonials Layout */
+.mystic-testimonials-wrapper {
+  overflow-x: auto;
+  display: flex;
+  gap: 16px;
+  padding-bottom: 16px;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+}
+
+.mystic-testimonial-img {
+  scroll-snap-align: center;
+  max-width: 440px;
+  width: 100%;
+  flex-shrink: 0;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* FAQ Accordion */
+.mystic-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.mystic-faq-item {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mystic-faq-question {
+  width: 100%;
+  text-align: left;
+  padding: 16px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #2d3748;
+}
+
+.mystic-faq-question:hover {
+  background-color: #f7fafc;
+}
+
+.mystic-faq-answer {
+  padding: 0 20px 16px;
+  font-size: 15px;
+  color: #4a5568;
+}
+
+/* Footer / Contact */
+.mystic-footer {
+  text-align: center;
+  background-color: #1a202c;
+  color: #fff;
+  padding: 40px 20px;
+}
+
+.mystic-footer p {
+  color: #cbd5e0;
+}
+
+.mystic-footer .mystic-btn-outline {
+  color: #fff;
+  border-color: rgba(255,255,255,0.3);
+  margin: 8px;
+}
+
+.mystic-footer .mystic-btn-outline:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.mystic-contact-list {
+  list-style: none;
+  padding: 0;
+  margin: 32px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.mystic-contact-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+}
+
+/* Buttons */
+.mystic-btn {
+  display: inline-block;
+  background-color: #e53e3e;
+  color: #fff;
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  padding: 16px 32px;
+  border-radius: 50px;
+  text-decoration: none;
+  margin: 24px auto;
+  box-shadow: 0 4px 14px rgba(229, 62, 62, 0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  border: none;
+}
+
+.mystic-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(229, 62, 62, 0.6);
+}
+
+.mystic-btn-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.mystic-btn-outline {
+  display: inline-block;
+  background: transparent;
+  color: #4a5568;
+  border: 1px solid #cbd5e0;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: background 0.2s;
+}
+
+.mystic-btn-outline:hover {
+  background: #f7fafc;
+}
+
+/* Sticky CTA */
+.mystic-sticky-cta {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 50;
+}
+
+.mystic-sticky-price h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #e53e3e;
+}
+
+.mystic-sticky-price strike {
+  color: #a0aec0;
+  font-size: 16px;
+  margin-right: 8px;
+  font-weight: normal;
+}
+
+.mystic-sticky-cta .mystic-btn {
+  margin: 0;
+  padding: 12px 24px;
+}
+
+@media (min-width: 800px) {
+  .mystic-sticky-cta {
+    max-width: 800px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

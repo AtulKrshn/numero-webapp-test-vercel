@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export function Footer() {
     return (
@@ -33,20 +34,17 @@ export function Footer() {
                         </ul>
                     </div>
 
-                    {/* Col 3: Explore */}
+                    {/* Col 3: Products */}
                     <div className="flex flex-col">
                         <h3 className="text-[var(--color-gold)] font-display text-base font-semibold uppercase tracking-wider mb-6">
-                            Explore
+                            Products
                         </h3>
                         <ul className="space-y-3 text-sm">
                             <li>
-                                <a href="/#career-numerology" className="hover:text-[var(--color-gold)] transition-colors">Career Numerology</a>
+                                <Link to="/reports" className="hover:text-[var(--color-gold)] transition-colors">Reports</Link>
                             </li>
                             <li>
-                                <a href="/#marriage-compatibility" className="hover:text-[var(--color-gold)] transition-colors">Marriage Compatibility</a>
-                            </li>
-                            <li>
-                                <a href="/#numerology-report-sample" className="hover:text-[var(--color-gold)] transition-colors">Sample Report</a>
+                                <Link to="/reports/numerology" className="hover:text-[var(--color-gold)] transition-colors">Vedic Numerology Report</Link>
                             </li>
                         </ul>
                     </div>
@@ -56,12 +54,12 @@ export function Footer() {
                         <h3 className="text-[var(--color-gold)] font-display text-base font-semibold uppercase tracking-wider mb-6">
                             Ready?
                         </h3>
-                        <a
-                            href="/#numerology-form"
+                        <Link
+                            to="/reports"
                             className="inline-flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-[var(--color-accent)] hover:bg-[#B45309] transition-colors"
                         >
                             Get Your Report
-                        </a>
+                        </Link>
                     </div>
                 </div>
 
@@ -74,3 +72,4 @@ export function Footer() {
         </footer>
     );
 }
+

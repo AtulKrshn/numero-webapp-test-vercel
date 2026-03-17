@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { Input } from '../ui/Input';
+import { DobInput } from './DobInput';
 import { Select } from '../ui/Select';
 import { Button } from '../ui/Button';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/Card';
@@ -13,38 +14,21 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
     const {
         register,
         handleSubmit,
-        watch,
+        control,
         formState: { errors, isValid, isSubmitting }
     } = useForm({
         mode: 'onBlur'
     });
 
-    // Feature Flag: Set to true when backend is ready
-    const ENABLE_PARTNER_FEATURE = false;
-
-    const hasPartner = ENABLE_PARTNER_FEATURE && watch('hasPartner');
-
     // Dynamic Pricing Logic
-    // 1. Identify Products
     const baseProduct = products.find(p => p.sku.includes('FULL') || p.sku.includes('SINGLE'));
-    const partnerProduct = products.find(p => p.sku.includes('REL') || p.sku.includes('PARTNER'));
 
-    // 2. Get Prices (Safety defaults if loading or API fail)
-    const basePriceVal = baseProduct ? Number(baseProduct.sale_price) : 51;
-    const baseMrpVal = baseProduct ? Number(baseProduct.mrp) : 251;
+    // Prices (safety defaults if loading or API fail)
+    const basePriceVal = baseProduct ? Number(baseProduct.sale_price) : 599;
+    const baseMrpVal = baseProduct ? Number(baseProduct.mrp) : 999;
 
-    const relPriceVal = partnerProduct ? Number(partnerProduct.sale_price) : 101;
-    const relMrpVal = partnerProduct ? Number(partnerProduct.mrp) : 501;
-
-    // 3. Calculate Display Values
-    // The "Partner Price" shown on checkbox is the DIFFERENCE (Upgrade Cost)
-    const partnerUpgradeCost = relPriceVal - basePriceVal;
-
-    // Total Price based on selection
-    const rawTotalPrice = hasPartner ? relPriceVal : basePriceVal;
-
-    // Original Price (MRP) based on selection
-    const originalPrice = hasPartner ? relMrpVal : baseMrpVal;
+    const rawTotalPrice = basePriceVal;
+    const originalPrice = baseMrpVal;
 
     const currencySymbol = baseProduct?.currency === 'USD' ? '$' : '₹';
 
@@ -57,9 +41,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
         const checkAutoCoupon = async () => {
             const autoCoupon = sessionStorage.getItem('auto_coupon');
             if (autoCoupon) {
-                // Determine current SKU
-                const currentSku = hasPartner ? partnerProduct?.sku : baseProduct?.sku;
-
+                const currentSku = baseProduct?.sku;
                 if (!currentSku) return;
 
                 try {
@@ -81,7 +63,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
         if (products.length > 0) {
             checkAutoCoupon();
         }
-    }, [hasPartner, products, baseProduct, partnerProduct]);
+    }, [products, baseProduct]);
 
     const finalDisplayPrice = Math.max(0, rawTotalPrice - couponDiscount);
 
@@ -97,7 +79,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
         // Then it runs `verifyAutoCoupon` and OVERWRITES it.
         // So passing rawTotalPrice here is CORRECT. Checkout will re-apply the discount.
 
-        const payload = { ...data, totalPrice: rawTotalPrice, currency: baseProduct?.currency || 'INR', hasPartner };
+        const payload = { ...data, totalPrice: rawTotalPrice, currency: baseProduct?.currency || 'INR' };
         if (onSubmit) onSubmit(payload);
     };
 
@@ -133,11 +115,29 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                                     <option value="other">Other</option>
                                 </Select>
 
-                                <Input
-                                    label="Date of Birth"
-                                    type="date"
-                                    error={errors.dob?.message}
-                                    {...register('dob', { required: 'Date of Birth is required' })}
+                                <Controller
+                                    control={control}
+                                    name="dob"
+                                    rules={{
+                                        required: 'Date of Birth is required',
+                                        validate: (value) => {
+                                            if (value === 'invalid') return 'Invalid Date of Birth';
+                                            // Basic ISO regex check YYYY-MM-DD
+                                            const regex = /^\d{4}-\d{2}-\d{2}$/;
+                                            if (!regex.test(value)) return 'Invalid Date of Birth';
+                                            return true;
+                                        }
+                                    }}
+                                    render={({ field, fieldState }) => (
+                                        <DobInput
+                                            label="Date of Birth (DD/MM/YYYY)"
+                                            value={field.value}
+                                            onChange={field.onChange}
+                                            onBlur={field.onBlur}
+                                            error={fieldState.error?.message}
+                                            required
+                                        />
+                                    )}
                                 />
                             </div>
 
@@ -203,23 +203,6 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
 
 
 
-                            {ENABLE_PARTNER_FEATURE && (
-                                <div className="flex items-center space-x-2 pt-4 border-t">
-                                    <input
-                                        type="checkbox"
-                                        id="hasPartner"
-                                        className="h-5 w-5 rounded border-gray-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
-                                        {...register('hasPartner')}
-                                    />
-                                    <label htmlFor="hasPartner" className="text-sm font-medium text-gray-700 cursor-pointer select-none">
-                                        Include Partner Compatibility Report <span className="text-[var(--color-primary)] font-bold">
-                                            ({partnerUpgradeCost > 0 ? '+' : ''}{currencySymbol}{partnerUpgradeCost})
-                                        </span>
-                                    </label>
-                                </div>
-                            )}
-
-
 
                             {/* Personal Customization Section */}
                             <div className="space-y-4">
@@ -259,50 +242,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                                 </div>
                             </div>
 
-                            <div className={`
-                    grid gap-4 overflow-hidden transition-all duration-300 ease-in-out
-                    ${hasPartner ? 'max-h-[600px] opacity-100 pt-2' : 'max-h-0 opacity-0'}
-                  `}>
-                                <div className="text-sm font-semibold text-gray-900 border-b pb-1 mb-2">Partner Details</div>
 
-                                <Input
-                                    label="Partner's Name"
-                                    placeholder="e.g. Priya Sharma"
-                                    error={errors.partnerName?.message}
-                                    {...register('partnerName', {
-                                        required: hasPartner ? 'Partner Name is required' : false
-                                    })}
-                                />
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <Input
-                                        label="Partner's DOB"
-                                        type="date"
-                                        error={errors.partnerDob?.message}
-                                        {...register('partnerDob', {
-                                            required: hasPartner ? 'Partner DOB is required' : false
-                                        })}
-                                    />
-
-                                    <Input
-                                        label="Partner's Time"
-                                        type="time"
-                                        error={errors.partnerTob?.message}
-                                        {...register('partnerTob', {
-                                            required: hasPartner ? 'Partner Time is required' : false
-                                        })}
-                                    />
-                                </div>
-
-                                <Input
-                                    label="Partner's Place of Birth"
-                                    placeholder="e.g. Pune, Maharashtra"
-                                    error={errors.partnerPob?.message}
-                                    {...register('partnerPob', {
-                                        required: hasPartner ? 'Partner Place is required' : false
-                                    })}
-                                />
-                            </div>
                         </CardContent>
                         {/* Hidden submit button to allow Enter key submission within the form */}
                         <button type="submit" className="hidden" />
@@ -322,8 +262,6 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
             {/* Right Column: Sticky Price Display (Desktop) & Fixed Bottom Bar (Mobile) */}
             <PriceDisplay
                 basePrice={basePriceVal}
-                partnerPrice={partnerUpgradeCost}
-                hasPartner={hasPartner}
                 totalPrice={finalDisplayPrice}
                 originalPrice={originalPrice}
                 currency={currencySymbol}

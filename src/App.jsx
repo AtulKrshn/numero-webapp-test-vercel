@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { Layout } from './components/ui/Layout'
 import { ToastProvider } from './context/ToastContext'
 import { Home } from './pages/Home'
+import { Reports } from './pages/Reports'
+import { ReportDetail } from './pages/ReportDetail'
+import { OrderForm } from './pages/OrderForm'
 import { Success } from './pages/Success'
 import { PaymentFailed } from './pages/PaymentFailed';
 import { Checkout } from './pages/Checkout';
@@ -20,6 +23,9 @@ function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/reports/:slug" element={<ReportDetail />} />
+            <Route path="/order/:slug" element={<OrderForm />} />
             <Route path="/success" element={<Success />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/payment-failed" element={<PaymentFailed />} />
