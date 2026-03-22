@@ -35,48 +35,44 @@ const ProblemSection = () => {
             <div style={{ padding: '40px 0 20px' }}>
                 <h2>Why This Isn't Just a Normal Report</h2>
 
-                <div className="mystic-compare-list">
-                    <div className="mystic-compare-item">
-                        <div className="mystic-compare-bad">
-                            <span>❌</span>
-                            <span>No generic predictions.</span>
-                        </div>
+                <div className="mystic-compare-group">
+                    {/* The Pros */}
+                    <div className="mystic-compare-pros">
                         <div className="mystic-compare-good">
                             <span>✅</span>
                             <span>Every insight is 100% personalized based on your date of birth and Your Personal Year.</span>
-                        </div>
-                    </div>
-
-                    <div className="mystic-compare-item">
-                        <div className="mystic-compare-bad">
-                            <span>❌</span>
-                            <span>Complicated numerology terms that confuse you.</span>
                         </div>
                         <div className="mystic-compare-good">
                             <span>✅</span>
                             <span>Clean visuals, Easy to Understand, and plain English and Hindi explanations.</span>
                         </div>
-                    </div>
-
-                    <div className="mystic-compare-item">
-                        <div className="mystic-compare-bad">
-                            <span>❌</span>
-                            <span>No copy-paste remedies.</span>
-                        </div>
                         <div className="mystic-compare-good">
                             <span>✅</span>
                             <span>Monthly remedies and crystal suggestions tailored to your personal vibrations.</span>
                         </div>
-                    </div>
-
-                    <div className="mystic-compare-item">
-                        <div className="mystic-compare-bad">
-                            <span>❌</span>
-                            <span>No vague “good or bad year” statements.</span>
-                        </div>
                         <div className="mystic-compare-good">
                             <span>✅</span>
                             <span>Detailed month-by-month guidance for finance, career, relationships & health.</span>
+                        </div>
+                    </div>
+
+                    {/* The Cons */}
+                    <div className="mystic-compare-cons">
+                        <div className="mystic-compare-bad">
+                            <span>❌</span>
+                            <span>No generic predictions.</span>
+                        </div>
+                        <div className="mystic-compare-bad">
+                            <span>❌</span>
+                            <span>Complicated numerology terms that confuse you.</span>
+                        </div>
+                        <div className="mystic-compare-bad">
+                            <span>❌</span>
+                            <span>No copy-paste remedies.</span>
+                        </div>
+                        <div className="mystic-compare-bad">
+                            <span>❌</span>
+                            <span>No vague “good or bad year” statements.</span>
                         </div>
                     </div>
                 </div>

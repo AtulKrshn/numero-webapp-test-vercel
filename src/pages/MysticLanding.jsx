@@ -5,13 +5,18 @@ import Benefits from './mystic/components/Benefits';
 import ProblemSection from './mystic/components/ProblemSection';
 import Testimonials from './mystic/components/Testimonials';
 import FAQ from './mystic/components/FAQ';
-import Footer from './mystic/components/Footer';
 import PricingCTA from './mystic/components/PricingCTA';
 
 const MysticLanding = () => {
     // Ensure the page scrolls to top on mount like a fresh landing page
     useEffect(() => {
         window.scrollTo(0, 0);
+        // Fallback for different scroll containers or router restorations
+        setTimeout(() => {
+            window.scrollTo(0, 0);
+            document.documentElement.scrollTop = 0;
+            document.body.scrollTop = 0;
+        }, 0);
     }, []);
 
     return (
@@ -21,7 +26,6 @@ const MysticLanding = () => {
             <ProblemSection />
             <Testimonials />
             <FAQ />
-            <Footer />
             <PricingCTA />
         </div>
     );

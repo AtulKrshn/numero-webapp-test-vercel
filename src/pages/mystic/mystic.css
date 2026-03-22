@@ -30,7 +30,8 @@
 .mystic-container h4 {
   font-size: 16px;
   font-weight: 600;
-  color: #e53e3e; /* Red-ish accent like original */
+  color: #e53e3e;
+  /* Red-ish accent like original */
   text-align: center;
   margin-bottom: 8px;
   text-transform: uppercase;
@@ -65,7 +66,7 @@
   padding: 16px;
   border-radius: 8px;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .mystic-feature-card h3 {
@@ -92,7 +93,7 @@
   background: #fff;
   padding: 16px;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .mystic-list-icon {
@@ -122,11 +123,38 @@
 @media (max-width: 600px) {
   .mystic-compare-item {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  }
+
+  .mystic-compare-bad,
+  .mystic-compare-good {
+    border: none;
+    border-radius: 0;
+  }
+
+  .mystic-compare-bad {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
   }
 }
 
-.mystic-compare-bad, .mystic-compare-good {
+.mystic-compare-group {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.mystic-compare-pros,
+.mystic-compare-cons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mystic-compare-bad,
+.mystic-compare-good {
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -161,7 +189,7 @@
   width: 100%;
   flex-shrink: 0;
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* FAQ Accordion */
@@ -219,12 +247,12 @@
 
 .mystic-footer .mystic-btn-outline {
   color: #fff;
-  border-color: rgba(255,255,255,0.3);
+  border-color: rgba(255, 255, 255, 0.3);
   margin: 8px;
 }
 
 .mystic-footer .mystic-btn-outline:hover {
-  background: rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .mystic-contact-list {
@@ -296,7 +324,7 @@
   left: 0;
   width: 100%;
   background: #fff;
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
   padding: 16px 20px;
   display: flex;
   justify-content: space-between;

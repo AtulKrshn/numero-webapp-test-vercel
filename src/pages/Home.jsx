@@ -11,11 +11,8 @@ export function Home() {
 
             {/* ===== SECTION 1: HERO ===== */}
             <section className="relative py-20 md:py-32 text-center overflow-hidden">
-                {/* Dark atmospheric background */}
+                {/* Solid primary background */}
                 <div className="absolute inset-0 bg-[var(--color-primary)] -z-10"></div>
-                <div className="absolute inset-0 bg-gradient-to-br from-[#1a0505] via-[var(--color-primary)] to-[#2d0a0a] -z-10"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-amber-500/5 rounded-full blur-3xl -z-[5]"></div>
-                <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
 
                 <div className="max-w-3xl mx-auto px-4 space-y-8">
                     <h1 className="text-4xl md:text-6xl font-display font-bold text-white leading-tight">
@@ -154,8 +151,6 @@ export function Home() {
 
             {/* ===== SECTION 5: CTA BANNER ===== */}
             <section className="py-14 md:py-20 bg-[var(--color-primary)] text-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#1a0505] via-[var(--color-primary)] to-[#2d0a0a]"></div>
-                <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent"></div>
 
                 <div className="relative z-10 max-w-2xl mx-auto px-4 space-y-6">
                     <h2 className="text-2xl md:text-3xl font-display font-bold text-white">

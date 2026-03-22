@@ -13,10 +13,12 @@ import { NotFound } from './pages/NotFound'
 
 import { PixelRouteTracker } from './components/PixelRouteTracker'
 import { CouponCapture } from './components/CouponCapture'
+import { ScrollToTop } from './components/ScrollToTop'
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <PixelRouteTracker />
       <ToastProvider>
         <CouponCapture />

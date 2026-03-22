@@ -6,14 +6,25 @@ export function Footer() {
         <footer className="w-full bg-[var(--color-footer)] text-[var(--color-footer-text)] pt-16 pb-8 text-left border-t-0">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-                    {/* Col 1: Brand */}
+                    {/* Col 1: Brand & Contact */}
                     <div className="flex flex-col">
                         <h3 className="text-[var(--color-gold)] font-display text-base font-semibold uppercase tracking-wider mb-6">
                             About DevSankhya
                         </h3>
-                        <p className="text-sm leading-relaxed opacity-90">
+                        <p className="text-sm leading-relaxed opacity-90 mb-6 font-sans">
                             Unlocking human potential through the ancient science of numbers.
                         </p>
+
+                        <div className="space-y-3 pt-1 border-t border-[#4A3B32]/30">
+                            <a href="mailto:reports@mysticprashant.com" className="flex items-center gap-3 text-sm hover:text-[var(--color-gold)] transition-colors opacity-90 hover:opacity-100">
+                                {/* <span className="text-base">📧</span> */}
+                                <span>support@devsankhya.com</span>
+                            </a>
+                            <a href="https://wa.me/918890750024" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm hover:text-[var(--color-gold)] transition-colors opacity-90 hover:opacity-100">
+                                <span className="text-base">💬</span>
+                                <span>+91 82506 68150</span>
+                            </a>
+                        </div>
                     </div>
 
                     {/* Col 2: Policies */}
