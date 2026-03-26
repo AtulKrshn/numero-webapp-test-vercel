@@ -26,7 +26,7 @@ const HeroV2 = ({ salePrice, mrp, currency, onCTA, isLoading }) => {
                 <div className="v2-hero-pill">🎯 Your Question Answered</div>
             </div>
 
-            <div className="v2-price-row">
+            {/* <div className="v2-price-row">
                 {isLoading ? (
                     <div style={{ height: 32, width: 80, background: '#f0e6da', borderRadius: 8 }} />
                 ) : (
@@ -46,7 +46,7 @@ const HeroV2 = ({ salePrice, mrp, currency, onCTA, isLoading }) => {
 
             <p style={{ fontSize: 13, color: '#b0a090', marginTop: 12 }}>
                 Secure payment via Razorpay &bull; 5-6 ghante mein email pe
-            </p>
+            </p> */}
         </section>
     );
 };

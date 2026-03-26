@@ -4,7 +4,6 @@ import { ChevronRight } from 'lucide-react';
 const StickyCTAV2 = ({ salePrice, mrp, currency, onCTA, isLoading }) => {
     return (
         <>
-            <div className="v2-sticky-spacer" />
             <div className="v2-sticky-cta">
                 <div className="v2-sticky-price">
                     {isLoading ? (
