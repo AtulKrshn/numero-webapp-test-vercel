@@ -25,7 +25,6 @@ export const initAdvancedMatching = async (userData) => {
 
             const hashedData = {
                 em: await sha256(userData.email),
-                phone: await sha256(userData.phone),
                 ph: await sha256(userData.phone),
                 fn: await sha256(fname), // First Name
                 ln: await sha256(lname), // Last Name

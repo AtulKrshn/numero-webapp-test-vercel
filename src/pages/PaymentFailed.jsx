@@ -40,7 +40,7 @@ export function PaymentFailed() {
                     </div>
 
                     <div className="space-y-3 pt-2">
-                        <Button variant="outline" onClick={() => navigate('/')} className="w-full border-red-200 text-red-700 hover:bg-red-50">
+                        <Button variant="outline" onClick={() => navigate('/order/numerology')} className="w-full border-red-200 text-red-700 hover:bg-red-50">
                             Try Again
                         </Button>
                         <Button variant="ghost" className="w-full text-gray-500 text-sm">
