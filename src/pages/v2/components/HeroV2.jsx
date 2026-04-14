@@ -11,7 +11,7 @@ const HeroV2 = ({ salePrice, mrp, currency, onCTA, isLoading }) => {
                 <span>⭐</span> 10,000+ reports delivered
             </div>
 
-            <h1>Aapka 2026 — Poora Saal, Ek Report Mein</h1>
+            <h1>Your 2026 — The Entire Year, In One Report</h1>
 
             <img
                 src={reportMockup}
@@ -40,12 +40,12 @@ const HeroV2 = ({ salePrice, mrp, currency, onCTA, isLoading }) => {
             </div>
 
             <button className="v2-btn" onClick={onCTA}>
-                Apni Report Paaiye
+                Get Your Report
                 <ChevronRight />
             </button>
 
             <p style={{ fontSize: 13, color: '#b0a090', marginTop: 12 }}>
-                Secure payment via Razorpay &bull; 5-6 ghante mein email pe
+                Secure payment via Razorpay &bull; Delivered to your email in 5–6 hours
             </p> */}
         </section>
     );

@@ -93,82 +93,74 @@ export function OrderForm() {
     };
 
     return (
-        <div className="max-w-6xl mx-auto px-4 py-8 md:py-12">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <div className="max-w-3xl mx-auto px-4 py-8 md:py-12 space-y-8">
 
-                {/* Order Summary — mobile: top, desktop: right (order-last) */}
-                <div className="lg:order-last lg:col-span-1">
-                    <div className="lg:sticky lg:top-24">
-                        <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden shadow-sm">
-                            {/* Header */}
-                            <div className="px-6 py-4 bg-amber-50/60 border-b border-[var(--color-border)]">
-                                <h2 className="font-display font-semibold text-lg text-[var(--color-primary)]">
-                                    Order Summary
-                                </h2>
-                            </div>
+            {/* Form first */}
+            <UserDetailsForm
+                onSubmit={handleFormSubmit}
+                isProcessing={isProcessing}
+                products={products}
+                isLoadingProducts={isLoadingProducts}
+            />
 
-                            <div className="px-6 py-5 space-y-5">
-                                {/* Product Name & Price */}
-                                <div>
-                                    <h3 className="font-medium text-gray-900 text-sm">Vedic Numerology Report 2026</h3>
-                                    <div className="flex items-baseline gap-2 mt-1">
-                                        <span className="text-2xl font-bold text-[var(--color-primary)] font-sans">{currency}{salePrice}</span>
-                                        {product && product.mrp > salePrice && (
-                                            <span className="text-sm text-gray-400 line-through">{currency}{product.mrp}</span>
-                                        )}
-                                    </div>
-                                </div>
+            {/* Order Summary — below the form */}
+            <div className="rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] overflow-hidden shadow-sm">
+                {/* Header */}
+                <div className="px-6 py-4 bg-amber-50/60 border-b border-[var(--color-border)]">
+                    <h2 className="font-display font-semibold text-lg text-[var(--color-primary)]">
+                        Order Summary
+                    </h2>
+                </div>
 
-                                {/* What's included */}
-                                <div className="space-y-3">
-                                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">What's Included</p>
-                                    <ul className="space-y-2.5">
-                                        <li className="flex items-start gap-2.5 text-sm text-gray-700">
-                                            <Sparkles className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
-                                            <span>2026 predictions (personal year, core numbers)</span>
-                                        </li>
-                                        <li className="flex items-start gap-2.5 text-sm text-gray-700">
-                                            <BookOpen className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
-                                            <span>Active planes analysis</span>
-                                        </li>
-                                        <li className="flex items-start gap-2.5 text-sm text-gray-700">
-                                            <Gem className="w-4 h-4 text-purple-600 mt-0.5 shrink-0" />
-                                            <span>Missing numbers + maha-mantra + stone</span>
-                                        </li>
-                                        <li className="flex items-start gap-2.5 text-sm text-gray-700">
-                                            <MessageCircleQuestion className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
-                                            <span>Answer to your personal question</span>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                {/* Delivery badge */}
-                                <div className="flex items-center gap-2 bg-amber-50 px-3 py-2 rounded-lg">
-                                    <Clock className="w-4 h-4 text-amber-700" />
-                                    <span className="text-sm text-amber-800 font-medium">5-6 ghante mein inbox mein</span>
-                                </div>
-
-                                {/* Trust line */}
-                                <div className="flex items-center gap-1.5 text-xs text-gray-400 pt-1">
-                                    <ShieldCheck className="w-3.5 h-3.5" />
-                                    <span>Secure payment via Razorpay</span>
-                                </div>
-                            </div>
+                <div className="px-6 py-5 space-y-5">
+                    {/* Product Name & Price */}
+                    <div>
+                        <h3 className="font-medium text-gray-900 text-sm">Vedic Numerology Report 2026</h3>
+                        <div className="flex items-baseline gap-2 mt-1">
+                            <span className="text-2xl font-bold text-[var(--color-primary)] font-sans">{currency}{salePrice}</span>
+                            {product && product.mrp > salePrice && (
+                                <span className="text-sm text-gray-400 line-through">{currency}{product.mrp}</span>
+                            )}
                         </div>
                     </div>
-                </div>
 
-                {/* Form — desktop: left 2 cols */}
-                <div className="lg:col-span-2">
-                    <UserDetailsForm
-                        onSubmit={handleFormSubmit}
-                        isProcessing={isProcessing}
-                        products={products}
-                        isLoadingProducts={isLoadingProducts}
-                    />
-                </div>
+                    {/* What's included */}
+                    <div className="space-y-3">
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">What's Included</p>
+                        <ul className="space-y-2.5">
+                            <li className="flex items-start gap-2.5 text-sm text-gray-700">
+                                <Sparkles className="w-4 h-4 text-amber-600 mt-0.5 shrink-0" />
+                                <span>2026 predictions (personal year, core numbers)</span>
+                            </li>
+                            <li className="flex items-start gap-2.5 text-sm text-gray-700">
+                                <BookOpen className="w-4 h-4 text-blue-600 mt-0.5 shrink-0" />
+                                <span>Active planes analysis</span>
+                            </li>
+                            <li className="flex items-start gap-2.5 text-sm text-gray-700">
+                                <Gem className="w-4 h-4 text-purple-600 mt-0.5 shrink-0" />
+                                <span>Missing numbers + maha-mantra + stone</span>
+                            </li>
+                            <li className="flex items-start gap-2.5 text-sm text-gray-700">
+                                <MessageCircleQuestion className="w-4 h-4 text-green-600 mt-0.5 shrink-0" />
+                                <span>Answer to your personal question</span>
+                            </li>
+                        </ul>
+                    </div>
 
+                    {/* Delivery badge */}
+                    <div className="flex items-center gap-2 bg-amber-50 px-3 py-2 rounded-lg">
+                        <Clock className="w-4 h-4 text-amber-700" />
+                        <span className="text-sm text-amber-800 font-medium">Delivered to your inbox in 5–6 hours</span>
+                    </div>
+
+                    {/* Trust line */}
+                    <div className="flex items-center gap-1.5 text-xs text-gray-400 pt-1">
+                        <ShieldCheck className="w-3.5 h-3.5" />
+                        <span>Secure payment via Razorpay</span>
+                    </div>
+                </div>
             </div>
+
         </div>
     );
 }

@@ -1,19 +1,19 @@
 import React from 'react';
 
 const reasons = [
-    'Aapke numbers ke hisaab se — har section sirf aapke liye likha jaata hai',
-    'Career, relationships, health — sab ek jagah, ek comprehensive report mein',
-    'Aapka personal sawaal — directly answered with numerological analysis',
-    'Practical remedies jo aap daily life mein use kar sakte hain — mantras, stones, aur alignment tips',
-    'Generic horoscopes nahi — har insight aapki exact birth date se calculated hai'
+    'Tailored to your numbers — every section is written exclusively for you',
+    'Career, relationships, health — all in one place, in one comprehensive report',
+    'Your personal question — directly answered with numerological analysis',
+    'Practical remedies you can use in daily life — mantras, stones, and alignment tips',
+    'No generic horoscopes — every insight is calculated from your exact birth date'
 ];
 
 const WhyThisReportV2 = () => {
     return (
         <section className="v2-section v2-bg-warm">
-            <h2 className="v2-section-title">Yeh Report Aapke Liye Kyun Zaroori Hai</h2>
+            <h2 className="v2-section-title">Why This Report Is Essential for You</h2>
             <p className="v2-section-subtitle">
-                Aapka 2026 plan, aapke numbers ke hisaab se
+                Your 2026 plan, based on your numbers
             </p>
 
             <div className="v2-why-list">

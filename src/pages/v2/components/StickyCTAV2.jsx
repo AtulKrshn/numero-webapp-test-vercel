@@ -18,7 +18,7 @@ const StickyCTAV2 = ({ salePrice, mrp, currency, onCTA, isLoading }) => {
                     )}
                 </div>
                 <button className="v2-btn" onClick={onCTA}>
-                    Abhi Order Karein
+                    Order Now
                     <ChevronRight />
                 </button>
             </div>

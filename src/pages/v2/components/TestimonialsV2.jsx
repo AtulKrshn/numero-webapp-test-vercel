@@ -4,24 +4,24 @@ const testimonials = [
     {
         name: 'Priya M.',
         city: 'Mumbai',
-        quote: 'Mujhe laga tha numerology generic hoti hai, but report mein career ke baare mein jo likha tha woh bilkul meri situation pe fit hua. Personal question ka jawab itna detailed tha — paisa vasool!'
+        quote: 'I thought numerology was generic, but what the report said about my career perfectly matched my situation. The answer to my personal question was so detailed — totally worth it!'
     },
     {
         name: 'Rohit K.',
         city: 'Delhi',
-        quote: 'Report 5 ghante mein aa gayi — I was surprised! Planes analysis se pehli baar samjha ki meri strengths kya hain. Remedies section sabse useful laga, practical hai.'
+        quote: 'Report arrived in 5 hours — I was surprised! The planes analysis helped me understand my strengths for the first time. The remedies section was the most useful — very practical.'
     },
     {
         name: 'Anjali S.',
         city: 'Bangalore',
-        quote: 'Pehle online predictions padhti thi but sab generic lagta tha. Is report mein meri DOB se specific guidance mili — career, health, relationships sab covered. Highly recommend.'
+        quote: 'I used to read online predictions but they all felt generic. This report gave me specific guidance based on my DOB — career, health, relationships, all covered. Highly recommend.'
     }
 ];
 
 const TestimonialsV2 = () => {
     return (
         <section className="v2-section v2-bg-warm">
-            <h2 className="v2-section-title">Log Kya Keh Rahe Hain</h2>
+            <h2 className="v2-section-title">What People Are Saying</h2>
             <p className="v2-section-subtitle">
                 Real people, real experiences
             </p>

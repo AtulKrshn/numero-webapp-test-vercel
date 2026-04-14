@@ -3,27 +3,27 @@ import React from 'react';
 const steps = [
     {
         number: 1,
-        title: 'Form Bhariye',
-        desc: 'Name, date of birth, time & place — aur aapka ek personal sawaal'
+        title: 'Fill the Form',
+        desc: 'Name, date of birth, time & place — plus your personal question'
     },
     {
         number: 2,
-        title: 'Hum Analyse Karein',
-        desc: 'Aapke numbers ka deep personalized analysis — Loshu Grid, Planes, Predictions'
+        title: 'We Analyse',
+        desc: 'Deep personalized analysis of your numbers — Loshu Grid, Planes, Predictions'
     },
     {
         number: 3,
-        title: 'Report Inbox Mein',
-        desc: '5-6 ghante mein aapke email pe — 22+ page PDF report, ready to read'
+        title: 'Report In Your Inbox',
+        desc: 'Delivered to your email in 5–6 hours — 22+ page PDF report, ready to read'
     }
 ];
 
 const HowItWorksV2 = () => {
     return (
         <section className="v2-section v2-bg-white">
-            <h2 className="v2-section-title">Kaise Milegi Aapki Report?</h2>
+            <h2 className="v2-section-title">How Will You Get Your Report?</h2>
             <p className="v2-section-subtitle">
-                3 simple steps — bas itna karna hai
+                3 simple steps — that's all it takes
             </p>
 
             <div className="v2-steps">

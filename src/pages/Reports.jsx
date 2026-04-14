@@ -27,10 +27,10 @@ export function Reports() {
             {/* Page Heading */}
             <div className="text-center mb-12">
                 <h1 className="text-3xl md:text-4xl font-display font-bold text-[var(--color-primary)]">
-                    Hamare Reports
+                    Our Reports
                 </h1>
                 <p className="text-[var(--color-muted)] mt-2 text-lg">
-                    Apne liye sahi report chuniye
+                    Choose the right report for you
                 </p>
             </div>
 
@@ -61,7 +61,7 @@ export function Reports() {
 
                         {/* Description */}
                         <p className="text-sm text-[var(--color-muted)] leading-relaxed mb-6">
-                            Aapke personal year, core numbers aur planes ka poora analysis — predictions, remedies aur aapka personal sawaal
+                            Complete analysis of your personal year, core numbers, and planes — predictions, remedies, and your personal question answered
                         </p>
 
                         {/* Price */}
@@ -84,10 +84,10 @@ export function Reports() {
                         {/* CTA — pushed to bottom */}
                         <div className="mt-auto">
                             <button
-                                onClick={() => navigate('/reports/numerology')}
+                                onClick={() => navigate('/reports/numerology-v2')}
                                 className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-white font-semibold rounded-lg hover:bg-[var(--color-primary-light)] transition-all duration-200 shadow-sm hover:shadow-md cursor-pointer"
                             >
-                                Dekhiye Report
+                                View Report
                                 <ChevronRight className="w-5 h-5" />
                             </button>
                         </div>
@@ -117,7 +117,7 @@ export function Reports() {
 
                         {/* Description */}
                         <p className="text-sm text-gray-400 leading-relaxed mb-6">
-                            Aap aur aapke partner ke numbers kitne compatible hain — relationship strengths, challenges aur guidance
+                            How compatible are your and your partner's numbers — relationship strengths, challenges, and guidance
                         </p>
 
                         {/* No price for coming soon */}
@@ -131,7 +131,7 @@ export function Reports() {
                                 disabled
                                 className="w-full inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-300 text-gray-500 font-semibold rounded-lg cursor-not-allowed"
                             >
-                                Jaldi Aata Hai
+                                Coming Soon
                             </button>
                         </div>
                     </div>

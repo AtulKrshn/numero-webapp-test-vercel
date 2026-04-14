@@ -4,51 +4,51 @@ const features = [
     {
         icon: '🔢',
         title: 'Core Numbers',
-        desc: 'Mulank, Bhagyank, Naamank — aapki personality, strengths aur life direction ka detailed breakdown'
+        desc: 'Mulank, Bhagyank, Naamank — a detailed breakdown of your personality, strengths, and life direction'
     },
     {
         icon: '📊',
         title: 'Active Planes Analysis',
-        desc: 'Mental, Will, Stability, Creative — sirf aapke chart ke active planes, with Loshu Grid visualization'
+        desc: 'Mental, Will, Stability, Creative — only the planes active in your chart, with Loshu Grid visualization'
     },
     {
         icon: '💼',
         title: 'Career & Money Guidance',
-        desc: '2026 mein kaun si roles suit karengi, business kaise build karein, aur income path kaise strengthen karein'
+        desc: 'Which roles will suit you in 2026, how to build your business, and how to strengthen your income path'
     },
     {
         icon: '❤️',
         title: 'Relationships',
-        desc: 'Mature communication, emotional balance, aur boundary setting — relationships ko healthier banana ke liye'
+        desc: 'Mature communication, emotional balance, and boundary setting — to build healthier relationships'
     },
     {
         icon: '🏥',
         title: 'Health & Well-being',
-        desc: 'Stress management, digestion, routine — aapke numbers ke hisaab se personalized health guidance'
+        desc: 'Stress management, digestion, routine — personalized health guidance based on your numbers'
     },
     {
         icon: '🎯',
         title: 'Your Personal Question',
-        desc: 'Form mein apna ek sawaal poochiye — career, relationship, ya kuch bhi — report mein detailed jawab milega'
+        desc: 'Ask your question in the form — career, relationship, or anything else — get a detailed answer in your report'
     },
     {
         icon: '🔮',
         title: 'Lucky Elements',
-        desc: 'Aapke lucky numbers, lucky colors, aur sabse achhe months for 2026 — calculated from your chart'
+        desc: 'Your lucky numbers, lucky colors, and best months for 2026 — calculated from your chart'
     },
     {
         icon: '💎',
         title: 'Remedies & Stones',
-        desc: 'Missing numbers ke liye maha-mantra, semi-precious stone recommendations, aur daily alignment tips'
+        desc: 'Maha-mantra, semi-precious stone recommendations, and daily alignment tips for your missing numbers'
     }
 ];
 
 const WhatsInsideV2 = () => {
     return (
         <section className="v2-section v2-bg-white">
-            <h2 className="v2-section-title">Report Mein Kya Milega?</h2>
+            <h2 className="v2-section-title">What's Inside Your Report?</h2>
             <p className="v2-section-subtitle">
-                Har section aapki birth date se calculated — generic nahi, sirf aapke liye
+                Every section calculated from your birth date — not generic, exclusively for you
             </p>
 
             <div className="v2-inside-grid">

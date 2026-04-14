@@ -95,7 +95,8 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                         <CardContent className="space-y-4">
                             <Input
                                 label="Full Name"
-                                placeholder="e.g. Rahul Sharma"
+                                placeholder="e.g. Rahul Singh"
+                                autoFocus
                                 error={errors.name?.message}
                                 {...register('name', { required: 'Name is required' })}
                             />
@@ -158,7 +159,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
 
 
                             <div className="space-y-1">
-                                <label className="block text-sm font-medium text-gray-700">Phone Number (Optional)</label>
+                                <label className="block text-sm font-medium text-gray-700">Phone Number</label>
                                 <div className="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-[var(--color-primary)]">
                                     <span className="flex select-none items-center px-3 text-gray-500 sm:text-sm bg-gray-50 border-r border-gray-300 rounded-l-md">
                                         +91
@@ -169,6 +170,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                                         placeholder="9876543210"
                                         maxLength={10}
                                         {...register('phone', {
+                                            required: 'Phone number is required',
                                             pattern: {
                                                 value: /^[0-9]{10}$/,
                                                 message: "Must be 10 digits"

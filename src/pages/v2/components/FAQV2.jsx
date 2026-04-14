@@ -2,24 +2,24 @@ import React, { useState } from 'react';
 
 const faqs = [
     {
-        q: 'Report kitne time mein milegi?',
-        a: 'Aapki personalized report 5-6 ghante mein aapke email pe PDF format mein aa jaayegi.'
+        q: 'How long does it take to receive the report?',
+        a: 'Your personalized report will be delivered to your email as a PDF within 5–6 hours.'
     },
     {
-        q: 'Report kahan milegi?',
-        a: 'Report aapke email inbox mein milegi as a beautifully designed PDF — aap ise phone, tablet ya laptop pe padh sakte hain.'
+        q: 'Where will I receive the report?',
+        a: 'You\'ll receive the report in your email inbox as a beautifully designed PDF — you can read it on your phone, tablet, or laptop.'
     },
     {
-        q: 'Kaunsi date of birth use karein?',
-        a: 'Aapki original date of birth use karein. Numerology poori tarah se aapki exact birth date pe based hoti hai.'
+        q: 'Which date of birth should I use?',
+        a: 'Use your original date of birth. Numerology is entirely based on your exact birth date.'
     },
     {
-        q: 'Personal question mein kya pooch sakte hain?',
-        a: 'Aap kuch bhi pooch sakte hain — career direction, business start karna, relationship guidance, ya koi bhi specific sawaal jo aapke mann mein ho.'
+        q: 'What can I ask in the personal question?',
+        a: 'You can ask anything — career direction, starting a business, relationship guidance, or any specific question on your mind.'
     },
     {
-        q: 'Kya yeh report Hindi mein hogi?',
-        a: 'Report Hinglish (Hindi + English mix) mein hoti hai — easy to read, practical language mein, bina kisi complicated jargon ke.'
+        q: 'What language is the report in?',
+        a: 'You can choose your preferred language — English, Hindi, or Hinglish — during checkout. The report is written in easy-to-read, practical language without any complicated jargon.'
     }
 ];
 
@@ -32,7 +32,7 @@ const FAQV2 = () => {
 
     return (
         <section className="v2-section v2-bg-white">
-            <h2 className="v2-section-title">Aksar Poochhe Jaane Wale Sawaal</h2>
+            <h2 className="v2-section-title">Frequently Asked Questions</h2>
 
             <div className="v2-faq-list">
                 {faqs.map((faq, index) => (

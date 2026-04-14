@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { fetchProducts } from '../services/api';
 import { trackEvent } from '../utils/pixel';
 import { Star, Sparkles, BookOpen, Gem, MessageCircleQuestion, Clock, ShieldCheck, ChevronRight } from 'lucide-react';
-import MysticLanding from './MysticLanding';
 
 export function ReportDetail() {
     const { slug } = useParams();
@@ -59,10 +58,7 @@ export function ReportDetail() {
         navigate('/order/numerology');
     };
 
-    return <MysticLanding />;
-
-    if (false) {
-        return (
+    return (
             <div className="space-y-0">
 
                 {/* ===== SECTION 1: HERO ===== */}
@@ -74,15 +70,15 @@ export function ReportDetail() {
                     <div className="max-w-3xl mx-auto px-4 space-y-6">
                         <div className="inline-flex items-center gap-2 bg-amber-100/80 text-amber-800 px-4 py-1.5 rounded-full text-sm font-medium">
                             <Clock className="w-4 h-4" />
-                            5-6 ghante mein aapke inbox mein
+                            Delivered to your inbox in 5–6 hours
                         </div>
 
                         <h1 className="text-3xl md:text-5xl font-display font-bold text-[var(--color-primary)] leading-tight">
-                            Aapke 2026 ke numbers — predictions, remedies, aur aapka personal sawaal
+                            Your 2026 numbers — predictions, remedies, and your personal question answered
                         </h1>
 
                         <p className="text-lg md:text-xl text-[var(--color-muted)] max-w-2xl mx-auto leading-relaxed">
-                            Apni exact birth date se jaaniye — is saal aapka career, relationships, health aur money ka kya kehta hai aapka chart
+                            Discover from your exact birth date — what your chart says about career, relationships, health, and finances this year
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
@@ -94,7 +90,7 @@ export function ReportDetail() {
                                 onClick={handleCTA}
                                 className="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-primary)] text-white font-semibold rounded-lg hover:bg-[var(--color-primary-light)] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 cursor-pointer"
                             >
-                                Apni Report Paaiye
+                                Get Your Report
                                 <ChevronRight className="w-5 h-5" />
                             </button>
                         </div>
@@ -110,10 +106,10 @@ export function ReportDetail() {
                     <div className="max-w-5xl mx-auto px-4">
                         <div className="text-center mb-12">
                             <h2 className="text-2xl md:text-3xl font-display font-bold text-[var(--color-primary)]">
-                                Report Mein Kya Milega
+                                What's Inside Your Report
                             </h2>
                             <p className="text-[var(--color-muted)] mt-2">
-                                Aapke numbers ke hisaab se — sirf aapke liye
+                                Tailored to your numbers — exclusively for you
                             </p>
                         </div>
 
@@ -125,7 +121,7 @@ export function ReportDetail() {
                                 </div>
                                 <h3 className="font-display font-semibold text-lg text-[var(--color-primary)] mb-2">2026 Predictions</h3>
                                 <p className="text-sm text-[var(--color-muted)] leading-relaxed">
-                                    Aapke personal year number ke hisaab se career, money, relationships aur health ka poora breakdown
+                                    A complete breakdown of career, finances, relationships, and health based on your personal year number
                                 </p>
                             </div>
 
@@ -136,7 +132,7 @@ export function ReportDetail() {
                                 </div>
                                 <h3 className="font-display font-semibold text-lg text-[var(--color-primary)] mb-2">Planes Analysis</h3>
                                 <p className="text-sm text-[var(--color-muted)] leading-relaxed">
-                                    Aapke chart mein jo planes active hain unka detailed analysis — strengths aur risks dono
+                                    Detailed analysis of the planes active in your chart — both strengths and risks
                                 </p>
                             </div>
 
@@ -147,7 +143,7 @@ export function ReportDetail() {
                                 </div>
                                 <h3 className="font-display font-semibold text-lg text-[var(--color-primary)] mb-2">Missing Numbers + Remedies</h3>
                                 <p className="text-sm text-[var(--color-muted)] leading-relaxed">
-                                    Jo numbers missing hain unke liye maha-mantra aur semi-precious stone recommendation
+                                    Maha-mantra and semi-precious stone recommendations for your missing numbers
                                 </p>
                             </div>
 
@@ -158,7 +154,7 @@ export function ReportDetail() {
                                 </div>
                                 <h3 className="font-display font-semibold text-lg text-[var(--color-primary)] mb-2">Your Personal Question</h3>
                                 <p className="text-sm text-[var(--color-muted)] leading-relaxed">
-                                    Form mein apna ek sawaal poochiye — career, business, relationship — aur report mein uska jawab milega
+                                    Ask your question in the form — career, business, relationship — and get the answer in your report
                                 </p>
                             </div>
                         </div>
@@ -170,10 +166,10 @@ export function ReportDetail() {
                     <div className="max-w-4xl mx-auto px-4">
                         <div className="text-center mb-10">
                             <h2 className="text-2xl md:text-3xl font-display font-bold text-[var(--color-primary)]">
-                                Aisi Hogi Aapki Report
+                                Here's What Your Report Looks Like
                             </h2>
                             <p className="text-[var(--color-muted)] mt-2">
-                                Yeh sirf ek jhalak hai — aapki report aapke exact numbers ke hisaab se poori alag hogi
+                                This is just a glimpse — your actual report will be completely unique based on your exact numbers
                             </p>
                         </div>
 
@@ -187,12 +183,12 @@ export function ReportDetail() {
                                 <div className="px-6 py-5 space-y-3 relative">
                                     <div className="space-y-2">
                                         <p className="text-sm text-gray-700 font-medium">Mulank (Root Number): 3</p>
-                                        <p className="text-sm text-gray-600 blur-[3px] select-none">Aapka Mulank 3 hai — yeh creativity aur self-expression ka number hai. Jupiter iske swami hain, jo aapko natural leadership...</p>
-                                        <p className="text-sm text-gray-600 blur-[3px] select-none">2026 mein Personal Year 5 ke saath, yeh saal aapke liye transformation aur unexpected changes leke aayega...</p>
+                                        <p className="text-sm text-gray-600 blur-[3px] select-none">Your Mulank is 3 — the number of creativity and self-expression. Jupiter governs it, giving you natural leadership...</p>
+                                        <p className="text-sm text-gray-600 blur-[3px] select-none">With Personal Year 5 in 2026, this year will bring transformation and unexpected changes...</p>
                                     </div>
                                     <div className="space-y-2 pt-2 border-t border-dashed border-gray-200">
                                         <p className="text-sm text-gray-700 font-medium blur-[2px] select-none">Bhagyank (Destiny Number): 7</p>
-                                        <p className="text-sm text-gray-600 blur-[4px] select-none">Aapka Bhagyank spiritual growth aur deep research ki taraf point karta hai. Ketu ka influence aapko intuitive decisions...</p>
+                                        <p className="text-sm text-gray-600 blur-[4px] select-none">Your Bhagyank points toward spiritual growth and deep research. Ketu's influence drives you toward intuitive decisions...</p>
                                     </div>
                                     {/* Fade overlay */}
                                     <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent"></div>
@@ -208,12 +204,12 @@ export function ReportDetail() {
                                 <div className="px-6 py-5 space-y-3 relative">
                                     <div className="space-y-2">
                                         <p className="text-sm text-gray-700 font-medium">Mental Plane: Strong (4, 5, 3 present)</p>
-                                        <p className="text-sm text-gray-600 blur-[3px] select-none">Aapka mental plane bahut active hai — analytical thinking aur logical decision-making mein aap exceptional hain. Lekin overthinking ka risk...</p>
-                                        <p className="text-sm text-gray-600 blur-[3px] select-none">2026 mein Mercury retrograde phases mein apne decisions ko rush mat kariye — patience aapka sabse bada ally hoga...</p>
+                                        <p className="text-sm text-gray-600 blur-[3px] select-none">Your mental plane is highly active — you're exceptional at analytical thinking and logical decision-making. But there's a risk of overthinking...</p>
+                                        <p className="text-sm text-gray-600 blur-[3px] select-none">During Mercury retrograde phases in 2026, don't rush your decisions — patience will be your greatest ally...</p>
                                     </div>
                                     <div className="space-y-2 pt-2 border-t border-dashed border-gray-200">
                                         <p className="text-sm text-gray-700 font-medium blur-[2px] select-none">Emotional Plane: Needs Attention</p>
-                                        <p className="text-sm text-gray-600 blur-[4px] select-none">Numbers 2 aur 6 ki absence emotional plane mein ek gap create karti hai. Relationships mein vulnerability feel ho sakti hai...</p>
+                                        <p className="text-sm text-gray-600 blur-[4px] select-none">The absence of numbers 2 and 6 creates a gap in your emotional plane. You may feel vulnerable in relationships...</p>
                                     </div>
                                     <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-white to-transparent"></div>
                                 </div>
@@ -232,10 +228,10 @@ export function ReportDetail() {
                             <div className="relative z-10 space-y-4">
                                 <MessageCircleQuestion className="w-12 h-12 mx-auto text-amber-300" />
                                 <h2 className="text-2xl md:text-3xl font-display font-bold">
-                                    Aap Apna Sawaal Pooch Sakte Hain
+                                    You Can Ask Your Own Question
                                 </h2>
                                 <p className="text-white/80 max-w-xl mx-auto leading-relaxed">
-                                    Report form mein aapko ek personal sawaal likhne ka mauka milega — jo bhi aapke mann mein hai, hum uska jawab report mein دیتے hain
+                                    In the report form, you'll get a chance to write one personal question — whatever's on your mind, we'll answer it in your report
                                 </p>
                             </div>
                         </div>
@@ -247,7 +243,7 @@ export function ReportDetail() {
                     <div className="max-w-5xl mx-auto px-4">
                         <div className="text-center mb-10">
                             <h2 className="text-2xl md:text-3xl font-display font-bold text-[var(--color-primary)]">
-                                Log Kya Keh Rahe Hain
+                                What People Are Saying
                             </h2>
                         </div>
 
@@ -257,17 +253,17 @@ export function ReportDetail() {
                                 {
                                     name: 'Priya M.',
                                     city: 'Mumbai',
-                                    quote: 'Mujhe laga tha numerology generic hoti hai, lekin report mein mere career ke baare mein jo likha tha woh bilkul sahi nikla. Very impressed!'
+                                    quote: 'I thought numerology was generic, but what the report said about my career turned out to be spot on. Very impressed!'
                                 },
                                 {
                                     name: 'Rohit K.',
                                     city: 'Delhi',
-                                    quote: 'Personal question ka jawab itna detailed tha ki main shocked tha. Paisa vasool se zyada hai — highly recommend everyone.'
+                                    quote: 'The answer to my personal question was so detailed I was shocked. It\'s more than worth the price — highly recommend to everyone.'
                                 },
                                 {
                                     name: 'Anjali S.',
                                     city: 'Bangalore',
-                                    quote: 'Remedies section sabse useful laga — mantra aur stone recommendation dono practical hain. Report 5 ghante mein aa gayi!'
+                                    quote: 'The remedies section was the most useful — both mantra and stone recommendations are practical. Report arrived in 5 hours!'
                                 }
                             ].map((t, i) => (
                                 <div key={i} className="p-6 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)]">
@@ -293,14 +289,14 @@ export function ReportDetail() {
                     <div className="max-w-2xl mx-auto px-4 text-center space-y-8">
                         <div className="space-y-3">
                             <p className="text-[var(--color-muted)] text-lg">
-                                Ek personal numerologist session: <span className="line-through">₹2,000–₹5,000</span>
+                                A personal numerologist session: <span className="line-through">₹2,000–₹5,000</span>
                             </p>
                             <p className="text-2xl md:text-3xl font-display font-bold text-[var(--color-primary)]">
-                                Aapki poori 2026 report: sirf {currency}{salePrice}
+                                Your complete 2026 report: just {currency}{salePrice}
                             </p>
                             <div className="inline-flex items-center gap-2 text-sm text-[var(--color-muted)]">
                                 <Clock className="w-4 h-4" />
-                                5-6 ghante mein aapke inbox mein
+                                Delivered to your inbox in 5–6 hours
                             </div>
                         </div>
 
@@ -308,7 +304,7 @@ export function ReportDetail() {
                             onClick={handleCTA}
                             className="inline-flex items-center gap-2 px-10 py-4 bg-[var(--color-primary)] text-white font-semibold text-lg rounded-lg hover:bg-[var(--color-primary-light)] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 cursor-pointer"
                         >
-                            Abhi Apni Report Paaiye — {currency}{salePrice}
+                            Get Your Report Now — {currency}{salePrice}
                             <ChevronRight className="w-5 h-5" />
                         </button>
 
@@ -322,5 +318,4 @@ export function ReportDetail() {
 
             </div>
         );
-    }
 }

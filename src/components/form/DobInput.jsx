@@ -1,188 +1,217 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 
 export function DobInput({ value, onChange, onBlur, error, label, required }) {
-    // Internal state to manage individual fields
     const [day, setDay] = useState('');
     const [month, setMonth] = useState('');
     const [year, setYear] = useState('');
 
-    const dayRef = useRef(null);
-    const monthRef = useRef(null);
-    const yearRef = useRef(null);
+    // Refs to track latest values (avoids stale closure bugs)
+    const dayRef = useRef('');
+    const monthRef = useRef('');
+    const yearRef = useRef('');
+
+    const dayInputRef = useRef(null);
+    const monthInputRef = useRef(null);
+    const yearInputRef = useRef(null);
     const containerRef = useRef(null);
 
-    // Track focus to hide error while typing
     const [isFocused, setIsFocused] = useState(false);
 
-    const handleFocus = () => {
-        setIsFocused(true);
-    };
+    // Keep refs in sync with state
+    useEffect(() => { dayRef.current = day; }, [day]);
+    useEffect(() => { monthRef.current = month; }, [month]);
+    useEffect(() => { yearRef.current = year; }, [year]);
 
-    // Initialize from external value if present (and not matching internal state)
+    // Sync from parent value (e.g. form reset)
     useEffect(() => {
-        if (value) {
+        if (value && typeof value === 'string' && value.includes('-')) {
             const [y, m, d] = value.split('-');
             if (y && m && d) {
-                // Only update if different to avoid cursor jumping loops, 
-                // though with split inputs it's less an issue than single input.
                 if (d !== day) setDay(d);
                 if (m !== month) setMonth(m);
                 if (y !== year) setYear(y);
             }
-        } else if (value === undefined) {
-            // Keep internal state if just incomplete, don't wipe it unless explicit reset needed?
-            // Actually RHF sending undefined means "invalid/incomplete". 
-            // We shouldn't wipe user's typing.
         }
     }, [value]);
 
-    // Validation Helper
+    // --- Validation ---
+    const getDaysInMonth = (m, y) => {
+        const monthNum = parseInt(m, 10);
+        const yearNum = parseInt(y, 10);
+        if (!monthNum || monthNum < 1 || monthNum > 12) return 31;
+        if (!yearNum || yearNum < 1900) return new Date(2000, monthNum, 0).getDate();
+        return new Date(yearNum, monthNum, 0).getDate();
+    };
+
     const isValidDate = (d, m, y) => {
         if (!d || !m || !y) return false;
-
         const dayNum = parseInt(d, 10);
         const monthNum = parseInt(m, 10);
         const yearNum = parseInt(y, 10);
-
         if (isNaN(dayNum) || isNaN(monthNum) || isNaN(yearNum)) return false;
-
-        // Basic Ranges
         if (monthNum < 1 || monthNum > 12) return false;
-        if (dayNum < 1 || dayNum > 31) return false;
-
-        // Year Ranges
-        const currentYear = new Date().getFullYear();
-        if (yearNum < 1900 || yearNum > currentYear) return false;
-
-        // Strict Calendar Check (e.g. Feb 30)
+        if (yearNum < 1900 || yearNum > new Date().getFullYear()) return false;
+        const maxDay = getDaysInMonth(m, y);
+        if (dayNum < 1 || dayNum > maxDay) return false;
         const date = new Date(yearNum, monthNum - 1, dayNum);
-        if (
-            date.getFullYear() !== yearNum ||
-            date.getMonth() !== monthNum - 1 ||
-            date.getDate() !== dayNum
-        ) {
-            return false;
-        }
-
-        // Future Date Check (redundant with year check but stricter)
         if (date > new Date()) return false;
-
         return true;
     };
 
-    const emitChange = (d, m, y) => {
+    // --- Emit to parent (uses refs for latest values) ---
+    const emitValue = useCallback((d, m, y) => {
         if (!d && !m && !y) {
-            // Signal empty state to parent (triggers 'required')
             onChange(undefined);
             return;
         }
 
-        if (isValidDate(d, m, y)) {
-            onChange(`${y}-${m}-${d}`);
+        if (d.length >= 1 && m.length >= 1 && y.length === 4) {
+            const paddedD = d.padStart(2, '0');
+            const paddedM = m.padStart(2, '0');
+            if (isValidDate(paddedD, paddedM, y)) {
+                onChange(`${y}-${paddedM}-${paddedD}`);
+            } else {
+                onChange('invalid');
+            }
         } else {
-            // Signal invalid state to parent (distinct from empty)
             onChange('invalid');
         }
-    };
+    }, [onChange]);
 
+    // --- Day ---
     const handleDayChange = (e) => {
-        let val = e.target.value.replace(/\D/g, ''); // Numeric only
+        let val = e.target.value.replace(/\D/g, '').slice(0, 2);
+        const num = parseInt(val, 10);
 
-        if (val.length > 2) val = val.slice(0, 2);
-
-        // Strict Day Check
-        if (parseInt(val, 10) > 31) return; // Ignore impossible input
-        if (val === '00') return; // Ignore 00
+        if (val.length === 2 && num > 31) val = '31';
+        if (val.length === 2 && num === 0) val = '01';
 
         setDay(val);
+        dayRef.current = val;
 
-        // Focus Management
-        if (val.length === 2) {
-            monthRef.current?.focus();
+        // Auto-advance: digits 4-9 can only be single-digit days (04-09)
+        if (val.length === 1 && num >= 4) {
+            const padded = val.padStart(2, '0');
+            setDay(padded);
+            dayRef.current = padded;
+            monthInputRef.current?.focus();
+            emitValue(padded, monthRef.current, yearRef.current);
+            return;
         }
 
-        emitChange(val, month, year);
+        if (val.length === 2) {
+            monthInputRef.current?.focus();
+        }
+
+        emitValue(val, monthRef.current, yearRef.current);
     };
 
+    // --- Month ---
     const handleMonthChange = (e) => {
-        let val = e.target.value.replace(/\D/g, '');
+        let val = e.target.value.replace(/\D/g, '').slice(0, 2);
+        const num = parseInt(val, 10);
 
-        if (val.length > 2) val = val.slice(0, 2);
-
-        // Strict Month Check
-        if (parseInt(val, 10) > 12) return;
-        if (val === '00') return;
+        if (val.length === 2 && num > 12) val = '12';
+        if (val.length === 2 && num === 0) val = '01';
 
         setMonth(val);
+        monthRef.current = val;
+
+        // Auto-advance: digits 2-9 can only be single-digit months (02-09)
+        if (val.length === 1 && num >= 2) {
+            const padded = val.padStart(2, '0');
+            setMonth(padded);
+            monthRef.current = padded;
+            yearInputRef.current?.focus();
+            emitValue(dayRef.current, padded, yearRef.current);
+            return;
+        }
 
         if (val.length === 2) {
-            yearRef.current?.focus();
+            yearInputRef.current?.focus();
         }
 
-        emitChange(day, val, year);
+        emitValue(dayRef.current, val, yearRef.current);
     };
 
+    // --- Year ---
     const handleYearChange = (e) => {
-        let val = e.target.value.replace(/\D/g, '');
-
-        if (val.length > 4) val = val.slice(0, 4);
-
+        let val = e.target.value.replace(/\D/g, '').slice(0, 4);
         setYear(val);
+        yearRef.current = val;
 
         if (val.length === 4) {
-            // Optional: blur or stay? User requirement: "auto-blur year field"
-            if (isValidDate(day, month, val)) {
-                yearRef.current?.blur();
+            const num = parseInt(val, 10);
+            if (num >= 1900) {
+                yearInputRef.current?.blur();
             }
         }
 
-        emitChange(day, month, val);
+        emitValue(dayRef.current, monthRef.current, val);
     };
 
-    const handlePadBlur = (e, type) => {
-        let newVal;
-
-        // Check if focus is moving within the component
+    // --- Blur: pad single digits and emit final value ---
+    const handleBlur = (e) => {
         const nextFocus = e.relatedTarget;
-        const isStillInside = containerRef.current && containerRef.current.contains(nextFocus);
+        const isStillInside = containerRef.current?.contains(nextFocus);
 
-        if (type === 'day') {
-            newVal = day;
-            if (newVal.length === 1 && parseInt(newVal) > 0) {
-                newVal = `0${newVal}`;
-                setDay(newVal);
-            }
-            emitChange(newVal, month, year);
-        } else if (type === 'month') {
-            newVal = month;
-            if (newVal.length === 1 && parseInt(newVal) > 0) {
-                newVal = `0${newVal}`;
-                setMonth(newVal);
-            }
-            emitChange(day, newVal, year);
-        } else if (type === 'year') {
-            // No padding for year, but still need to emit change and handle parent onBlur
-            emitChange(day, month, year);
-        }
-
-        // Only trigger validation if focus leaves the entire group
         if (!isStillInside) {
+            let finalDay = dayRef.current;
+            let finalMonth = monthRef.current;
+
+            if (finalDay.length === 1 && parseInt(finalDay, 10) > 0) {
+                finalDay = finalDay.padStart(2, '0');
+                setDay(finalDay);
+                dayRef.current = finalDay;
+            }
+            if (finalMonth.length === 1 && parseInt(finalMonth, 10) > 0) {
+                finalMonth = finalMonth.padStart(2, '0');
+                setMonth(finalMonth);
+                monthRef.current = finalMonth;
+            }
+
             setIsFocused(false);
+            emitValue(finalDay, finalMonth, yearRef.current);
             if (onBlur) onBlur();
         }
     };
 
+    // --- Backspace navigation ---
     const handleKeyDown = (e, type) => {
         if (e.key === 'Backspace') {
-            if (type === 'month' && month === '') {
-                dayRef.current?.focus();
-            } else if (type === 'year' && year === '') {
-                monthRef.current?.focus();
+            if (type === 'month' && monthRef.current === '') {
+                dayInputRef.current?.focus();
+            } else if (type === 'year' && yearRef.current === '') {
+                monthInputRef.current?.focus();
             }
         }
     };
 
     const showError = error && !isFocused;
+
+    // --- Inline hint text ---
+    const getHintText = () => {
+        const dayNum = parseInt(day, 10);
+        const monthNum = parseInt(month, 10);
+        const yearNum = parseInt(year, 10);
+
+        if (month && month.length === 2 && monthNum > 12) {
+            return 'Month cannot exceed 12';
+        }
+        if (day && month.length === 2 && day.length >= 1) {
+            const maxDay = getDaysInMonth(month, year || '2000');
+            if (dayNum > maxDay) return `This month only has ${maxDay} days`;
+        }
+        if (year && year.length === 4 && yearNum < 1900) {
+            return 'Year must be 1900 or later';
+        }
+        if (year && year.length === 4 && yearNum > new Date().getFullYear()) {
+            return 'Year cannot be in the future';
+        }
+        return null;
+    };
+
+    const hint = getHintText();
 
     return (
         <div className="flex flex-col gap-1.5 w-full" ref={containerRef}>
@@ -192,19 +221,19 @@ export function DobInput({ value, onChange, onBlur, error, label, required }) {
                 </label>
             )}
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 w-full">
                 <input
-                    ref={dayRef}
+                    ref={dayInputRef}
                     type="tel"
                     inputMode="numeric"
                     placeholder="DD"
                     value={day}
                     onChange={handleDayChange}
-                    onFocus={handleFocus}
-                    onBlur={(e) => handlePadBlur(e, 'day')}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={handleBlur}
                     onKeyDown={(e) => handleKeyDown(e, 'day')}
                     className={`
-                        flex h-10 w-16 text-center rounded-md border px-3 py-2 text-sm 
+                        flex-1 min-w-0 h-10 text-center rounded-md border px-2 py-2 text-sm 
                         placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 
                         transition-colors
                         ${showError
@@ -219,17 +248,17 @@ export function DobInput({ value, onChange, onBlur, error, label, required }) {
                 <span className="self-center text-gray-400">/</span>
 
                 <input
-                    ref={monthRef}
+                    ref={monthInputRef}
                     type="tel"
                     inputMode="numeric"
                     placeholder="MM"
                     value={month}
                     onChange={handleMonthChange}
-                    onFocus={handleFocus}
-                    onBlur={(e) => handlePadBlur(e, 'month')}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={handleBlur}
                     onKeyDown={(e) => handleKeyDown(e, 'month')}
                     className={`
-                        flex h-10 w-16 text-center rounded-md border px-3 py-2 text-sm 
+                        flex-1 min-w-0 h-10 text-center rounded-md border px-2 py-2 text-sm 
                         placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 
                         transition-colors
                         ${showError
@@ -244,17 +273,17 @@ export function DobInput({ value, onChange, onBlur, error, label, required }) {
                 <span className="self-center text-gray-400">/</span>
 
                 <input
-                    ref={yearRef}
+                    ref={yearInputRef}
                     type="tel"
                     inputMode="numeric"
                     placeholder="YYYY"
                     value={year}
                     onChange={handleYearChange}
-                    onFocus={handleFocus}
-                    onBlur={(e) => handlePadBlur(e, 'year')}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={handleBlur}
                     onKeyDown={(e) => handleKeyDown(e, 'year')}
                     className={`
-                        flex h-10 w-24 text-center rounded-md border px-3 py-2 text-sm 
+                        flex-[1.5] min-w-0 h-10 text-center rounded-md border px-2 py-2 text-sm 
                         placeholder:text-gray-400 focus-visible:outline-none focus-visible:ring-2 
                         transition-colors
                         ${showError
@@ -266,6 +295,10 @@ export function DobInput({ value, onChange, onBlur, error, label, required }) {
                     aria-label="Year"
                 />
             </div>
+
+            {hint && isFocused && (
+                <span className="text-xs text-amber-600 font-medium">{hint}</span>
+            )}
 
             {showError && (
                 <span className="text-sm font-medium text-red-500" role="alert">
