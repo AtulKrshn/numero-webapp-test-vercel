@@ -172,8 +172,14 @@ export function Checkout() {
                 navigate('/success', {
                     state: {
                         orderData: formData,
-                        payment: { razorpay_payment_id: 'COUPON_FREE' },
-                        status: 'confirmed'
+                        payment: { 
+                            razorpay_payment_id: 'COUPON_FREE',
+                            razorpay_order_id: order.gateway_order_id
+                        },
+                        status: 'confirmed',
+                        amount: order.amount,
+                        currency: order.currency,
+                        sku: selectedProduct.sku
                     }
                 });
                 return;
