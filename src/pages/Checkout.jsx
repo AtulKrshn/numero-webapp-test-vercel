@@ -49,7 +49,7 @@ export function Checkout() {
                         console.log("Auto-coupon invalid:", result.message);
                     }
                 } catch (err) {
-                    setCouponMessage(`oupon failed: ${err.message}`);
+                    setCouponMessage(`Coupon failed: ${err.message}`);
                     console.log("Auto-coupon error:", err);
                 } finally {
                     setIsProcessing(false);
@@ -124,7 +124,7 @@ export function Checkout() {
             const payload = {
                 email: formData.email,
                 product_skus: [selectedProduct.sku],
-                coupon_code: isCouponApplied ? couponCode : null, // Include Coupon
+                coupon_code: isCouponApplied ? couponCode : (sessionStorage.getItem('auto_coupon') || null), // Always send coupon if available — backend re-validates
                 primary_name: formData.name,
                 primary_gender: formData.gender,
                 primary_dob: formData.dob,

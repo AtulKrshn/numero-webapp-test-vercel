@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchProducts } from '../services/api';
 import { trackEvent } from '../utils/pixel';
+import { useCoupon } from '../hooks/useCoupon';
 
 // V2 components
 import HeroV2 from './v2/components/HeroV2';
@@ -46,10 +47,13 @@ export function ReportDetailV2() {
             });
         }
     }, [product]);
-
-    const salePrice = product ? product.sale_price : 399;
-    const mrp = product ? product.mrp : 999;
+    // tbd
+    const salePrice = product ? Number(product.sale_price) : 399;
+    const mrp = product ? Number(product.mrp) : 999;
     const currency = '₹';
+
+    // Coupon hook — auto-reads from sessionStorage
+    const { finalPrice, couponDiscount, appliedCoupon } = useCoupon(product?.sku, salePrice);
 
     const handleCTA = () => {
         navigate('/order/numerology');
@@ -57,6 +61,16 @@ export function ReportDetailV2() {
 
     return (
         <div className="v2-container">
+            {/* Coupon Banner */}
+            {appliedCoupon && couponDiscount > 0 && (
+                <div className="v2-coupon-banner">
+                    <span className="v2-coupon-banner-icon">✨</span>
+                    <span>
+                        Coupon <strong>{appliedCoupon}</strong> applied — you save <strong>{currency}{couponDiscount}</strong>
+                    </span>
+                </div>
+            )}
+
             <HeroV2
                 salePrice={salePrice}
                 mrp={mrp}
@@ -70,8 +84,8 @@ export function ReportDetailV2() {
             <TestimonialsV2 />
             <FAQV2 />
             <StickyCTAV2
-                salePrice={salePrice}
-                mrp={mrp}
+                salePrice={appliedCoupon ? finalPrice : salePrice}
+                mrp={appliedCoupon ? salePrice : mrp}
                 currency={currency}
                 onCTA={handleCTA}
                 isLoading={isLoading}

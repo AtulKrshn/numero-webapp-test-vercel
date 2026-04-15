@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Input } from '../ui/Input';
 import { DobInput } from './DobInput';
@@ -8,9 +8,8 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../ui/Card
 
 import { PriceDisplay } from '../ui/PriceDisplay';
 import { Flag } from 'lucide-react';
-import { checkCoupon } from '../../services/api';
 
-export function UserDetailsForm({ onSubmit, isProcessing = false, products = [], isLoadingProducts = true }) {
+export function UserDetailsForm({ onSubmit, isProcessing = false, products = [], isLoadingProducts = true, couponDiscount = 0, appliedCoupon = null }) {
     const {
         register,
         handleSubmit,
@@ -32,39 +31,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
 
     const currencySymbol = baseProduct?.currency === 'USD' ? '$' : '₹';
 
-    // Coupon State
-    const [couponDiscount, setCouponDiscount] = useState(0);
-    const [appliedCoupon, setAppliedCoupon] = useState(null);
-
-    // Auto-Apply Coupon Effect
-    useEffect(() => {
-        const checkAutoCoupon = async () => {
-            const autoCoupon = sessionStorage.getItem('auto_coupon');
-            if (autoCoupon) {
-                const currentSku = baseProduct?.sku;
-                if (!currentSku) return;
-
-                try {
-                    const result = await checkCoupon(autoCoupon, [currentSku]);
-                    if (result.valid) {
-                        setCouponDiscount(result.discount_amount);
-                        setAppliedCoupon(autoCoupon);
-                    } else {
-                        setCouponDiscount(0);
-                        setAppliedCoupon(null);
-                    }
-                } catch (error) {
-                    console.warn("Auto-coupon check failed on landing:", error);
-                    setCouponDiscount(0);
-                }
-            }
-        };
-
-        if (products.length > 0) {
-            checkAutoCoupon();
-        }
-    }, [products, baseProduct]);
-
+    // Coupon discount comes from parent (OrderForm) via useCoupon hook
     const finalDisplayPrice = Math.max(0, rawTotalPrice - couponDiscount);
 
     const handleFormSubmit = (data) => {
@@ -252,14 +219,7 @@ export function UserDetailsForm({ onSubmit, isProcessing = false, products = [],
                 </Card>
             </div>
 
-            {/* Sticky Coupon Banner */}
-            {couponDiscount > 0 && (
-                <div className="fixed top-[64px] left-0 right-0 z-40 bg-green-600 text-white py-2 shadow-md animate-in slide-in-from-top-2">
-                    <div className="max-w-7xl mx-auto px-4 text-center font-medium">
-                        🎉 Coupon '{appliedCoupon}' applied! You saved <span className="font-bold">{currencySymbol}{couponDiscount}</span>
-                    </div>
-                </div>
-            )}
+            {/* Coupon banner is now rendered by parent OrderForm */}
 
             {/* Right Column: Sticky Price Display (Desktop) & Fixed Bottom Bar (Mobile) */}
             <PriceDisplay

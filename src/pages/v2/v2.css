@@ -12,6 +12,41 @@
     background: #fffaf5;
 }
 
+/* --- Coupon Banner --- */
+.v2-coupon-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #1a472a 0%, #2d5a3f 100%);
+    color: #e8f5e9;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    animation: v2BannerSlideIn 0.4s ease-out;
+}
+
+.v2-coupon-banner strong {
+    color: #fff;
+    font-weight: 700;
+}
+
+.v2-coupon-banner-icon {
+    font-size: 16px;
+}
+
+@keyframes v2BannerSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* --- Section Base --- */
 .v2-section {
     padding: 56px 20px;
