@@ -101,8 +101,8 @@ export function OrderForm() {
 
             {/* Coupon Banner */}
             {appliedCoupon && couponDiscount > 0 && (
-                <div className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg bg-green-50 border border-green-200 text-green-800 text-sm font-medium animate-in slide-in-from-top-2">
-                    <span>✨</span>
+                <div className="coupon-banner">
+                    <span className="coupon-banner-icon">✨</span>
                     <span>Coupon <strong>{appliedCoupon}</strong> applied — you save <strong>{currency}{couponDiscount}</strong></span>
                 </div>
             )}

@@ -36,3 +36,44 @@
     color: var(--color-primary);
   }
 }
+
+/* --- Global Coupon Banner --- */
+.coupon-banner {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    z-index: 45;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 16px;
+    background: linear-gradient(135deg, #15803d 0%, #22c55e 100%);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(21, 128, 61, 0.25);
+    animation: bannerSlideIn 0.4s ease-out;
+}
+
+.coupon-banner strong {
+    color: #fff;
+    font-weight: 700;
+}
+
+.coupon-banner-icon {
+    font-size: 14px;
+}
+
+@keyframes bannerSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

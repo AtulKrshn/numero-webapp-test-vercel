@@ -63,8 +63,8 @@ export function ReportDetailV2() {
         <div className="v2-container">
             {/* Coupon Banner */}
             {appliedCoupon && couponDiscount > 0 && (
-                <div className="v2-coupon-banner">
-                    <span className="v2-coupon-banner-icon">✨</span>
+                <div className="coupon-banner">
+                    <span className="coupon-banner-icon">✨</span>
                     <span>
                         Coupon <strong>{appliedCoupon}</strong> applied — you save <strong>{currency}{couponDiscount}</strong>
                     </span>
